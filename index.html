@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Area ZeroZero</title>
+      <style>
+	     
+		.body2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0; /* Menghilangkan margin default pada body */
+        }
+	  
+        #maze {
+            display: grid;
+            grid-template-columns: repeat(7, 50px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+            grid-template-rows: repeat(7, 50px); /* Ubah angka 5 sesuai dengan jumlah baris grid */
+        }
+
+        .maze-cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+			position: relative; /* Diperlukan untuk mengatur posisi teks "P" */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .maze-wall {
+            background-color: black;
+        }
+		
+		.maze-warp {
+            background-color: blue;
+        }
+		
+		#controls {
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50; /* Warna latar belakang */
+            color: white; /* Warna teks */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Warna latar belakang saat tombol dihover */
+        }
+		
+		.teks-cantik {
+			text-transform: uppercase;
+			font-size: 2rem;
+			font-weight: bold;
+			color: #fff;
+			background: linear-gradient(120deg, #ff5252, #b1b1b1, #00e5ff);
+			background-size: 200% auto;
+		animation: gradient-shift 5s infinite;
+		}
+
+		@keyframes gradient-shift {
+		0% {
+			background-position: 0 0;
+		}
+		100% {
+			background-position: 200% 0;
+		}
+		}
+
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+	<div class="body2">
+	<div id="maze"></div>
+    <div id="namaArea" class="teks-cantik"></div>
+	</div>
+	<div class = "body2">
+    <div id="controls">
+        <button onclick="move('up')">Atas</button>
+        <br>
+        <button onclick="move('left')">Kiri</button>
+        <button onclick="move('right')">Kanan</button>
+        <br>
+        <button onclick="move('down')">Bawah</button>
+    </div>
+	</div>
+
+	<div id="tempatMaze"></div>
+	
+	<script>
+	    mazeList = {}
+		mazePosType = ['wall','road']
+	</script>
+	<script>
+		function createNeighbor(a,b){
+			if (mazeList[a][b]["neighbor"] == 1){return}
+			daftarTetangga = [[0,1],[0,-1],[-1,0],[1,0]];
+			for (i = 0; i < 4; i++){
+				a2 = a + daftarTetangga[i][0];
+				if (mazeList[a2] == undefined){mazeList[a2] = {};}
+				b2 = b + daftarTetangga[i][1];
+				if (mazeList[a2][b2] == undefined){
+				
+					if (mazeList[a2-1] == undefined){mazeList[a2-1] = {};}
+					if (mazeList[a2+1] == undefined){mazeList[a2+1] = {};}
+				
+					var mapBaru = []
+					mazeSize = [7,7];
+					warps = [Math.ceil(Math.random()*(mazeSize[0]-2)),Math.ceil(Math.random()*(mazeSize[0]-2)),Math.ceil(Math.random()*(mazeSize[1]-2)),Math.ceil(Math.random()*(mazeSize[1]-2))]
+					if (mazeList[a2][b2+1] != undefined){warps[2] = mazeList[a2][b2+1]["warps"][3];}
+					if (mazeList[a2][b2-1] != undefined){warps[3] = mazeList[a2][b2-1]["warps"][2];}
+					if (mazeList[a2-1][b2] != undefined){warps[0] = mazeList[a2-1][b2]["warps"][1];}
+					if (mazeList[a2+1][b2] != undefined){warps[1] = mazeList[a2+1][b2]["warps"][0];}
+					for(let i = 0; i < mazeSize[0]; i++){
+						newMazeRow = [];
+						for(let j = 0; j < mazeSize[1]; j++){
+								pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
+								if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
+								if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
+								if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
+								if ((i == Math.floor(mazeSize[0]/2))&&(j == Math.floor(mazeSize[1]/2))){pilihanTipe = 'road';}
+						newMazeRow.push(pilihanTipe)
+					}
+						mapBaru.push(newMazeRow);
+					}
+					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps}
+				}
+			}
+			mazeList[a][b]["neighbor"] = 1;
+		}
+	</script>
+	<script>
+		//create area zero zero
+		areaZeroZero = []
+		mazeSize = [7,7];
+		warps = [Math.ceil(Math.random()*(mazeSize[0]-2)),Math.ceil(Math.random()*(mazeSize[0]-2)),Math.ceil(Math.random()*(mazeSize[1]-2)),Math.ceil(Math.random()*(mazeSize[1]-2))]
+		for(let i = 0; i < mazeSize[0]; i++){
+			newMazeRow = [];
+			for(let j = 0; j < mazeSize[1]; j++){
+				pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
+				if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
+				if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
+				if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
+				if ((i == Math.floor(mazeSize[0]/2))&&(j == Math.floor(mazeSize[1]/2))){pilihanTipe = 'road';}
+			    newMazeRow.push(pilihanTipe)
+			}
+			areaZeroZero.push(newMazeRow);
+		}
+		mazeList[0] = {};
+		mazeList[0][0] = {"map": areaZeroZero, "neighbor": 0, "warps": warps}
+        createNeighbor(0,0)
+	</script>
+	
+	    <script>
+        maze = areaZeroZero
+
+        const playerPosition = { x: Math.floor(mazeSize[0]/2), y: Math.floor(mazeSize[1]/2) };
+        const playerArea = { x: 0, y: 0};
+		
+        function drawMaze() {
+			
+            const mazeContainer = document.getElementById('maze');
+            mazeContainer.innerHTML = '';
+
+            for (let row = 0; row < maze.length; row++) {
+                for (let col = 0; col < maze[row].length; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('maze-cell');
+                    cell.classList.add('maze-'+maze[row][col]);
+                    if (playerPosition.x === col && playerPosition.y === row) {
+                        cell.innerText = '😊'; // Representasi pemain
+                    }
+                    mazeContainer.appendChild(cell);
+                }
+            }
+			document.getElementById("namaArea").innerHTML = "Area (" + playerArea.x + ", " + playerArea.y + ")";
+        }
+
+        function move(direction) {
+            let newX = playerPosition.x;
+            let newY = playerPosition.y;
+
+            if (direction === 'up' && newY > 0 && maze[newY - 1][newX] !== 'wall') {
+                newY -= 1;
+            } else if (direction === 'down' && newY < maze.length - 1 && maze[newY + 1][newX] !== 'wall') {
+                newY += 1;
+            } else if (direction === 'left' && newX > 0 && maze[newY][newX - 1] !== 'wall') {
+                newX -= 1;
+            } else if (direction === 'right' && newX < maze[0].length - 1 && maze[newY][newX + 1] !== 'wall') {
+                newX += 1;
+            }
+
+            playerPosition.x = newX;
+            playerPosition.y = newY;
+			if (newX == 0){playerPosition.x = mazeSize[0] - 2; playerArea.x = playerArea.x - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			
+            drawMaze();
+        }
+		
+		// Tambahkan event listener untuk mendeteksi input tombol arah pada keyboard
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowUp') {
+                move('up');
+            } else if (event.key === 'ArrowDown') {
+                move('down');
+            } else if (event.key === 'ArrowLeft') {
+                move('left');
+            } else if (event.key === 'ArrowRight') {
+                move('right');
+            }
+        });
+
+        drawMaze();
+    </script>
+
+</body>
+
+</html>
