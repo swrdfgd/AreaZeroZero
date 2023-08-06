@@ -134,8 +134,7 @@
 								pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
 								if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 								if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
-								if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
-								if ((i == Math.floor(mazeSize[0]/2))&&(j == Math.floor(mazeSize[1]/2))){pilihanTipe = 'road';}
+								if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'};
 						newMazeRow.push(pilihanTipe)
 					}
 						mapBaru.push(newMazeRow);
