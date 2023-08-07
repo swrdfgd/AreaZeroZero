@@ -220,7 +220,7 @@
                     cell.classList.add('maze-cell');
                     cell.classList.add('maze-'+maze[row][col]);
                     if (playerPosition.x === col && playerPosition.y === row) {
-                        cell.innerText = '😊'; // Representasi pemain
+                        cell.innerHTML = '<img src="player.png"/>'; // Representasi pemain
                     }
                     mazeContainer.appendChild(cell);
                 }
