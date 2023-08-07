@@ -109,42 +109,6 @@
 		mazePosType = ['wall','road']
 	</script>
 	<script>
-		function mazeReconstruct(){
-			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
-			pilihanAreaXObjek = mazeList[pilihanAreaX];
-			if (Object.keys(pilihanAreaXObjek).length == 0){return}
-			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
-			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
-			var mapBaru = [];
-			var mazeSize = [7,7];
-			warps = mazeList[pilihanAreaX][pilihanAreaY]["warps"];
-			for(let i = 0; i < mazeSize[0]; i++){
-					newMazeRow = [];
-					for(let j = 0; j < mazeSize[1]; j++){
-						pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
-						if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
-						if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
-						if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
-						if ((i == Math.floor(mazeSize[0]/2))&&(j == Math.floor(mazeSize[1]/2))){pilihanTipe = 'road';}
-						newMazeRow.push(pilihanTipe)
-					}
-					mapBaru.push(newMazeRow);
-				}
-			mazeList[pilihanAreaX][pilihanAreaY]["map"] = mapBaru;
-		}
-	</script>
-	<script>
-		eventList = ['mazeReconstruct']
-		function eventStart(){
-			pilihanEvent = eventList[Math.floor(Math.random()*eventList.length)];
-			switch (pilihanEvent){
-				case 'mazeReconstruct':
-					mazeReconstruct();
-					break;
-			}
-		}
-	</script>
-	<script>
 		function createNeighbor(a,b){
 			if (mazeList[a][b]["neighbor"] == 1){return}
 			daftarTetangga = [[0,1],[0,-1],[-1,0],[1,0]];
@@ -207,7 +171,7 @@
         maze = areaZeroZero
 
         const playerPosition = { x: Math.floor(mazeSize[0]/2), y: Math.floor(mazeSize[1]/2) };
-        playerArea = { x: 0, y: 0};
+        const playerArea = { x: 0, y: 0};
 		
         function drawMaze() {
 			
@@ -244,10 +208,10 @@
 
             playerPosition.x = newX;
             playerPosition.y = newY;
-			if (newX == 0){playerPosition.x = mazeSize[0] - 2; playerArea.x = playerArea.x - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
-			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
-			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
-			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
+			if (newX == 0){playerPosition.x = mazeSize[0] - 2; playerArea.x = playerArea.x - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
+			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y)}
 			
             drawMaze();
         }
