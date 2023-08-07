@@ -75,26 +75,6 @@
 			background-position: 200% 0;
 		}
 		}
-		
-
-		#main-content {
-			width: 80%;
-			float: left;
-			position: absolute;
-		}
-		
-		#sidebar {
-			width: 20%;
-			float: right;
-			background-color: rgba(255, 255, 255, 0.7);
-			padding: 20px;
-		}
-		#sidebar2 {
-			width: 20%;
-			float: Left;
-			background-color: rgba(255, 255, 255, 0.7);
-			padding: 20px;
-		}
 
 
 
@@ -105,7 +85,6 @@
 </head>
 
 <body>
-<div id="main-content">
 	<div class="body2">
 	<div id="maze"></div>
 	</div>
@@ -114,36 +93,20 @@
 	</div>
 	<div class = "body2">
     <div id="controls">
-        <button id="buttonUp" onclick="move('up');">Up</button>
+        <button onclick="move('up')">Atas</button>
         <br>
-        <button id="buttonLeft" onclick="move('left');">Left</button>
-        <button id="buttonRight" onclick="move('right');">Right</button>
+        <button onclick="move('left')">Kiri</button>
+        <button onclick="move('right')">Kanan</button>
         <br>
-        <button id="buttonRight" onclick="move('down');">Down</button>
+        <button onclick="move('down')">Bawah</button>
     </div>
 	</div>
-</div>
 
+	<div id="tempatMaze"></div>
 	
 	<script>
 	    mazeList = {}
 		mazePosType = ['wall','road']
-	</script>
-	<script>
-		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		function spawnItem(){
-			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
-			pilihanAreaXObjek = mazeList[pilihanAreaX];
-			if (Object.keys(pilihanAreaXObjek).length == 0){return}
-			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
-			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
-			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){
-				mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];
-			}
-			koordinatItem = [Math.ceil(Math.random()*5),Math.ceil(Math.random()*5)]
-			if (mazeList[pilihanAreaX][pilihanAreaY]["map"][koordinatItem[0]][koordinatItem[1]]=='wall'){return}
-			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
-		}
 	</script>
 	<script>
 		function mazeReconstruct(){
@@ -159,15 +122,10 @@
 					newMazeRow = [];
 					for(let j = 0; j < mazeSize[1]; j++){
 						pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
-						if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 						if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 						if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
 						if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
-						if ((j > 0)&&(j < mazeSize[1] - 1)){ if ((i > 0)&&(i < mazeSize[0] - 1)){
-						if (mazeList[pilihanAreaX][pilihanAreaY]["item"]!=undefined){
-							if (mazeList[pilihanAreaX][pilihanAreaY]["item"][i-1][j-1] != ''){pilihanTipe = 'road'};
-						}
-						}}
+						if ((i == Math.floor(mazeSize[0]/2))&&(j == Math.floor(mazeSize[1]/2))){pilihanTipe = 'road';}
 						newMazeRow.push(pilihanTipe)
 					}
 					mapBaru.push(newMazeRow);
@@ -176,15 +134,12 @@
 		}
 	</script>
 	<script>
-		eventList = ['mazeReconstruct','spawnItem']
+		eventList = ['mazeReconstruct']
 		function eventStart(){
 			pilihanEvent = eventList[Math.floor(Math.random()*eventList.length)];
 			switch (pilihanEvent){
 				case 'mazeReconstruct':
 					mazeReconstruct();
-					break;
-				case 'spawnItem':
-					spawnItem();
 					break;
 			}
 		}
@@ -213,7 +168,6 @@
 						newMazeRow = [];
 						for(let j = 0; j < mazeSize[1]; j++){
 								pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
-								if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 								if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 								if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
 								if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'};
@@ -236,7 +190,6 @@
 			newMazeRow = [];
 			for(let j = 0; j < mazeSize[1]; j++){
 				pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
-				if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 				if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 				if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
 				if (( ((i==warps[0])&&(j==1))||((i==warps[1])&&(j==mazeSize[1]-2)) )||( ((i==1)&&(j==warps[2]))||((i==mazeSize[0]-2)&&(j==warps[3])) )){pilihanTipe = 'road'}
@@ -255,7 +208,6 @@
 
         const playerPosition = { x: Math.floor(mazeSize[0]/2), y: Math.floor(mazeSize[1]/2) };
         playerArea = { x: 0, y: 0};
-		playerItem = {};
 		
         function drawMaze() {
 			
@@ -267,15 +219,7 @@
                     const cell = document.createElement('div');
                     cell.classList.add('maze-cell');
                     cell.classList.add('maze-'+maze[row][col]);
-					if ((maze[row][col]).substring(0,4) == 'wall'){cell.classList.add('maze-wall');}
-					if ((maze[row][col]).substring(0,4) == 'wall' && maze[row][col].length == 5){cell.innerHTML = '<div style="color: white">' + (maze[row][col]).substring(4,5) + '</div>';}
-					
-					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
-					if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
-							if (mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1] != ''){cell.innerHTML = mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1]};
-					}
-					}}
-					if (playerPosition.x === col && playerPosition.y === row) {
+                    if (playerPosition.x === col && playerPosition.y === row) {
                         cell.innerHTML = '<img src="player.png"/>'; // Representasi pemain
                     }
                     mazeContainer.appendChild(cell);
@@ -283,56 +227,27 @@
             }
 			document.getElementById("namaArea").innerHTML = "Area (" + playerArea.x + ", " + playerArea.y + ")";
         }
-		
-		firstStep = false;
-		numWarp = 0;
+
         function move(direction) {
-			if (firstStep == false){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
             let newX = playerPosition.x;
             let newY = playerPosition.y;
 
-            if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) !== 'wall') {
+            if (direction === 'up' && newY > 0 && maze[newY - 1][newX] !== 'wall') {
                 newY -= 1;
-            } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) !== 'wall') {
+            } else if (direction === 'down' && newY < maze.length - 1 && maze[newY + 1][newX] !== 'wall') {
                 newY += 1;
-            } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) !== 'wall') {
+            } else if (direction === 'left' && newX > 0 && maze[newY][newX - 1] !== 'wall') {
                 newX -= 1;
-            } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) !== 'wall') {
+            } else if (direction === 'right' && newX < maze[0].length - 1 && maze[newY][newX + 1] !== 'wall') {
                 newX += 1;
             }
-			
-			else if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) == 'wall' && maze[newY - 1][newX].length == 5) {
-                if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
-            } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) == 'wall' && maze[newY + 1][newX].length == 5) {
-                if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
-            } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) == 'wall' && maze[newY][newX - 1].length == 5) {
-                if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
-            } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) == 'wall' && maze[newY][newX + 1].length == 5) {
-                if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
-            }
-			
 
             playerPosition.x = newX;
             playerPosition.y = newY;
-			if (newX == 0){playerPosition.x = mazeSize[0] - 2; playerArea.x = playerArea.x - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
-			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
-			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
-			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
-			if (numWarp == 1){document.getElementById('sidebar').innerHTML += '<br>You realize this place is very huge..';numWarp++}
-			newX = playerPosition.x;
-			newY = playerPosition.y;
-			
-			//Collect item
-			if ((newY > 0)&&(newY < maze[0].length - 1)){ if ((newX > 0)&&(newX < maze.length - 1)){
-			if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
-				if (mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] != ''){
-					if (playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]] == undefined){playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]] = 1 }
-					else {playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]]++}
-					mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] = '';
-				}
-			}
-			updateCollection();
-			}}
+			if (newX == 0){playerPosition.x = mazeSize[0] - 2; playerArea.x = playerArea.x - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
+			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
+			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
+			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();}
 			
             drawMaze();
         }
@@ -352,23 +267,6 @@
 
         drawMaze();
     </script>
-
-<div id="sidebar">
-You wake up in this unknown place...    
-</div>
-
-<div id="sidebar2">
-Your Collection 
-
-</div>
-<script>
-	function updateCollection(){
-		document.getElementById('sidebar2').innerHTML = "Your Collection<br>";
-		for (item in Object.keys(playerItem)){
-			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
-		}
-	}
-</script>
 
 </body>
 
