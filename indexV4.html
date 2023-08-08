@@ -38,15 +38,6 @@
             background-color: blue;
         }
 		
-		.maze-letterGenerator {
-            background-color: #FFFF00;
-        }
-		
-		.maze-home {
-            background-color: #FF00FF;
-        }
-
-		
 		#controls {
             margin-top: 20px;
         }
@@ -124,15 +115,9 @@
 	<div class = "body2">
     <div id="controls">
         <button id="buttonUp" onclick="move('up');">Up (W)</button>
-		<button id="buttonColorize" onclick="colorize();" hidden >Colorize</button>
         <br>
         <button id="buttonLeft" onclick="move('left');">Left (A)</button>
         <button id="buttonRight" onclick="move('right');">Right (D)</button>
-		<button id="buttonAreaClear" onclick="areaClear();" hidden >Area Clear</button>
-		<button id="buttonBomb" onclick="bomb();" hidden >Bomb</button>
-		<button id="buttonFastForward" onclick="fastForward();" hidden >Fast Forward >></button>
-		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
-		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
         <br>
         <button id="buttonRight" onclick="move('down');">Down (S)</button>
 		<button id="buttonEnd" onclick="endLife();" hidden >End</button>
@@ -146,126 +131,6 @@
 	    mazeList = {}
 		mazePosType = ['wall','road']
 	</script>
-	
-	<script>
-	function areaClear(){
-		for (let i = 1; i < mazeSize[0] - 1; i++){
-			for (let j = 1; j < mazeSize[1] - 1; j++){
-				mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'road';
-			}
-		}
-		playerItem['A']-=2;playerItem['R']--;playerItem['E']--
-
-		document.getElementById('buttonAreaClear').hidden = true;
-		if (playerItem['A'] > 1 && playerItem['R'] > 0 && playerItem['E'] > 0){document.getElementById('buttonAreaClear').hidden = false;}
-		drawMaze();
-	}
-	</script>
-
-	<script>
-	function bomb(){
-		for (let i = playerPosition.y - 1; i < playerPosition.y + 2; i++){
-			if (mazeList[playerArea.x][playerArea.y]["item"] == undefined){mazeList[playerArea.x][playerArea.y]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
-			for (let j = playerPosition.x - 1; j < playerPosition.x + 2; j++){
-				if (i*j > 0  && i < mazeSize[0] - 1 && j < mazeSize[1] - 1 ){
-					if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][j].length == 5){
-						mazeList[playerArea.x][playerArea.y]["item"][i-1][j-1] = mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(4,5);
-					}
-					mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'road';
-				}
-			}
-		}
-		playerItem['B']-=2;playerItem['O']--;playerItem['M']--
-
-		document.getElementById('buttonBomb').hidden = true;
-		if (playerItem['B'] > 1 && playerItem['O'] > 0 && playerItem['M'] > 0){document.getElementById('buttonBomb').hidden = false;}
-		drawMaze();
-	}
-	</script>	
-	
-	<script>
-	function colorize(){
-		var colorHexLight = '89ABCDEF';
-		var color = [0,0,0,0,0,0]
-		var colorHex = '0123456789ABCDEF'
-		color[0] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[1] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[2] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[3] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[4] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[5] = colorHex[Math.floor(Math.random()*colorHex.length)];
-		color[2*Math.floor(Math.random()*3)] = colorHexLight[Math.floor(Math.random()*colorHexLight.length)]
-		mazeList[playerArea.x][playerArea.y]['color'] = color.join('')
-
-		playerItem['C']--
-
-		document.getElementById('buttonColorize').hidden = true;
-		if (playerItem['C'] > 0){document.getElementById('buttonColorize').hidden = false;}
-		drawMaze();
-	}
-	</script>	
-	
-	<script>
-	function fastForward(){
-		eventSpeed++
-		document.getElementById('sidebar').innerHTML += '<br>You feel that time here is speeding up. All events happen faster...';
-
-		playerItem['F']--;playerItem['A']--;playerItem['S']--;playerItem['T']--;
-
-		document.getElementById('buttonFastForward').hidden = true;
-		if (playerItem['F']*playerItem['A']*playerItem['S']*playerItem['T'] > 0){document.getElementById('buttonFastForward').hidden = false;}
-		drawMaze();
-	}
-	</script>	
-	
-	<script>
-	function generatorBuild(){
-		mazeList[playerArea.x][playerArea.y]["map"][playerPosition.y][playerPosition.x] = 'letterGenerator';
-		eventList.push(`generateLetter(${playerArea.x},${playerArea.y},${playerPosition.y},${playerPosition.x})`)
-
-		playerItem['G']--;playerItem['E']-=2;playerItem['N']--;
-
-		document.getElementById('buttonGeneratorBuild').hidden = true;
-		if (playerItem['G'] > 0, playerItem['E'] > 1, playerItem['N'] > 0){document.getElementById('buttonGeneratorBuild').hidden = false;}
-		drawMaze();
-	}
-	</script>	
-	
-	<script>
-	function generateLetter(areaX,areaY,posY,posX){
-	    if (mazeList[areaX][areaY]["item"] == undefined){mazeList[areaX][areaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
-		if (mazeList[areaX][areaY]["map"][posY][posX] != 'letterGenerator'){return}
-		mazeList[areaX][areaY]["item"][posY - 1][posX - 1] = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
-	}
-	</script>
-	
-
-	<script>
-	function homeBuild(){
-		mazeList[playerArea.x][playerArea.y]["map"][playerPosition.y][playerPosition.x] = 'home';
-		mazeList[playerArea.x][playerArea.y]["permanent"] = true;
-		document.getElementById('sidebar').innerHTML += '<br>You created a home at <a href="#" onclick="goHome('+`${playerArea.x},${playerArea.y},${playerPosition.y},${playerPosition.x}`+');">AREA (' + playerArea.x + ", " + playerArea.y + ")</a>";
-
-		playerItem['H']--;playerItem['E']--;playerItem['O']--;playerItem['M'];
-
-		document.getElementById('buttonHomeBuild').hidden = true;
-		if (playerItem['H'] > 0, playerItem['E'] > 0, playerItem['O'] > 0, playerItem['M']){document.getElementById('buttonHomeBuild').hidden = false;}
-		drawMaze();
-	}
-	</script>	
-	
-	<script>
-	function goHome(areaX,areaY,posY,posX){
-		if (mazeList[areaX][areaY]["map"][posY][posX] != 'home'){
-			document.getElementById('sidebar').innerHTML += '<br>This home has been destroyed.';
-			return;
-		};
-		playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
-		maze = mazeList[playerArea.x][playerArea.y]["map"];
-		drawMaze();
-	}
-	</script>
-	
 	<script>
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		function spawnItem(){
@@ -288,9 +153,6 @@
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
 			if (Object.keys(pilihanAreaXObjek).length == 0){return}
 			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
-			if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] != undefined){
-				if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] == true){return}
-			}
 			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
 			var mapBaru = [];
 			var mazeSize = [7,7];
@@ -317,9 +179,7 @@
 	</script>
 	<script>
 		eventList = ['mazeReconstruct','spawnItem']
-		eventSpeed = 1;
 		function eventStart(){
-			for (let i = 0; i < eventSpeed; i++){
 			pilihanEvent = eventList[Math.floor(Math.random()*eventList.length)];
 			switch (pilihanEvent){
 				case 'mazeReconstruct':
@@ -328,8 +188,6 @@
 				case 'spawnItem':
 					spawnItem();
 					break;
-			}
-			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
 			}
 		}
 	</script>
@@ -399,8 +257,7 @@
 
         const playerPosition = { x: Math.floor(mazeSize[0]/2), y: Math.floor(mazeSize[1]/2) };
         playerArea = { x: 0, y: 0};
-		playerItem = {B: 4, O: 4, M: 2, C:5};
-		
+		playerItem = {};
 		
         function drawMaze() {
 			
@@ -412,7 +269,6 @@
                     const cell = document.createElement('div');
                     cell.classList.add('maze-cell');
                     cell.classList.add('maze-'+maze[row][col]);
-					
 					if ((maze[row][col]).substring(0,4) == 'wall'){cell.classList.add('maze-wall');}
 					if ((maze[row][col]).substring(0,4) == 'wall' && maze[row][col].length == 5){cell.innerHTML = '<div style="color: white">' + (maze[row][col]).substring(4,5) + '</div>';}
 					
@@ -421,9 +277,6 @@
 							if (mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1] != ''){cell.innerHTML = mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1]};
 					}
 					}}
-					if (mazeList[playerArea.x][playerArea.y]["color"]!=undefined && maze[row][col] == 'road'){
-							cell.style.backgroundColor = "#" + mazeList[playerArea.x][playerArea.y]["color"];
-					}
 					if (playerPosition.x === col && playerPosition.y === row) {
                         cell.innerHTML = '<img src="player.png"/>'; // Representasi pemain
                     }
@@ -431,7 +284,6 @@
                 }
             }
 			document.getElementById("namaArea").innerHTML = "Area (" + playerArea.x + ", " + playerArea.y + ")";
-			updateCollection();
         }
 		
 		firstStep = false;
@@ -462,17 +314,13 @@
             }
 			
 			else if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) == 'wall' && maze[newY - 1][newX].length == 5) {
-				if ((maze[newY - 1][newX]).substring(4,5) == 'U'){if (playerItem['U'] != undefined){playerItem['U']++} else {playerItem['U'] = 2;}}
                 if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) == 'wall' && maze[newY + 1][newX].length == 5) {
-                if ((maze[newY + 1][newX]).substring(4,5) == 'D'){if (playerItem['D'] != undefined){playerItem['D']++} else {playerItem['D'] = 2;}}
-				if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+                if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) == 'wall' && maze[newY][newX - 1].length == 5) {
-                if ((maze[newY][newX - 1]).substring(4,5) == 'L'){if (playerItem['L'] != undefined){playerItem['L']++} else {playerItem['L'] = 2;}}
-				if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+                if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) == 'wall' && maze[newY][newX + 1].length == 5) {
-                if ((maze[newY][newX + 1]).substring(4,5) == 'R'){if (playerItem['R'] != undefined){playerItem['R']++} else {playerItem['R'] = 2;}}
-				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+                if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             }
 			
 
@@ -498,37 +346,12 @@
 			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..';}}
 			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; document.getElementById('sidebar').innerHTML += '<br>You are so lonely..';}}
 			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; document.getElementById('sidebar').innerHTML += '<br>You are depressed..';}}
-			
+			updateCollection();
 			}}
 			if (playerItem['E']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
 				document.getElementById('buttonEnd').hidden = true;
 				if (playerItem['E']*playerItem['N']*playerItem['D'] > 0){document.getElementById('buttonEnd').hidden = false;}
 			}
-			if (playerItem['A']!=undefined && playerItem['R']!=undefined && playerItem['E']!=undefined){
-				document.getElementById('buttonAreaClear').hidden = true;
-				if (playerItem['A'] > 1 && playerItem['R'] > 0 && playerItem['E'] > 0){document.getElementById('buttonAreaClear').hidden = false;}
-			}
-			if (playerItem['B']!=undefined && playerItem['O']!=undefined && playerItem['M']!=undefined){
-				document.getElementById('buttonBomb').hidden = true;
-				if (playerItem['B'] > 1 && playerItem['O'] > 0 && playerItem['M'] > 0){document.getElementById('buttonBomb').hidden = false;}
-			}
-			if (playerItem['C']!=undefined){
-				document.getElementById('buttonColorize').hidden = true;
-				if (playerItem['C'] > 0){document.getElementById('buttonColorize').hidden = false;}
-			}
-			if (playerItem['F']!=undefined && playerItem['A']!=undefined && playerItem['S']!=undefined && playerItem['T']!=undefined){
-				document.getElementById('buttonFastForward').hidden = true;
-				if (playerItem['F']*playerItem['A']*playerItem['S']*playerItem['T'] > 0){document.getElementById('buttonFastForward').hidden = false;}
-			}
-			if (playerItem['G']!=undefined && playerItem['E']!=undefined && playerItem['N']!=undefined){
-				document.getElementById('buttonGeneratorBuild').hidden = true;
-				if (playerItem['G'] > 0, playerItem['E'] > 1, playerItem['N'] > 0){document.getElementById('buttonGeneratorBuild').hidden = false;}
-			}
-			if (playerItem['H']!=undefined && playerItem['E']!=undefined && playerItem['O']!=undefined && playerItem['M']!=undefined){
-				document.getElementById('buttonHomeBuild').hidden = true;
-				if (playerItem['H'] > 0, playerItem['E'] > 1, playerItem['O'] > 0, playerItem['M'] > 0){document.getElementById('buttonHomeBuild').hidden = false;}
-			}
-			
 		
             drawMaze();
         }
@@ -547,7 +370,7 @@
         });
 		
 
-        
+        drawMaze();
     </script>
 
 <div id="sidebar">
@@ -565,9 +388,6 @@ Your Collection
 			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
 		}
 	}
-	updateCollection();
-	drawMaze();
-	move('neutral');
 </script>
 
 </body>
