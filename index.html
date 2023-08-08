@@ -125,6 +125,7 @@
     <div id="controls">
         <button id="buttonUp" onclick="move('up');">Up (W)</button>
 		<button id="buttonColorize" onclick="colorize();" hidden >Colorize</button>
+		<button id="buttonJack" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
         <br>
         <button id="buttonLeft" onclick="move('left');">Left (A)</button>
         <button id="buttonRight" onclick="move('right');">Right (D)</button>
@@ -133,6 +134,8 @@
 		<button id="buttonFastForward" onclick="fastForward();" hidden >Fast Forward >></button>
 		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
 		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
+		<button id="buttonKeyMaking" onclick="keyMaking();" hidden >Key-Making</button>
+		<button id="buttonMining" onclick="mining();" hidden >Mining</button>
         <br>
         <button id="buttonRight" onclick="move('down');">Down (S)</button>
 		<button id="buttonEnd" onclick="endLife();" hidden >End</button>
@@ -246,10 +249,10 @@
 		mazeList[playerArea.x][playerArea.y]["permanent"] = true;
 		document.getElementById('sidebar').innerHTML += '<br>You created a home at <a href="#" onclick="goHome('+`${playerArea.x},${playerArea.y},${playerPosition.y},${playerPosition.x}`+');">AREA (' + playerArea.x + ", " + playerArea.y + ")</a>";
 
-		playerItem['H']--;playerItem['E']--;playerItem['O']--;playerItem['M'];
+		playerItem['H']--;playerItem['E']--;playerItem['O']--;playerItem['M']--;
 
 		document.getElementById('buttonHomeBuild').hidden = true;
-		if (playerItem['H'] > 0, playerItem['E'] > 0, playerItem['O'] > 0, playerItem['M']){document.getElementById('buttonHomeBuild').hidden = false;}
+		if (playerItem['H']*playerItem['E']*playerItem['O']*playerItem['M'] > 0){document.getElementById('buttonHomeBuild').hidden = false;}
 		drawMaze();
 	}
 	</script>	
@@ -262,6 +265,72 @@
 		};
 		playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
 		maze = mazeList[playerArea.x][playerArea.y]["map"];
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+		function itemReceive(){
+			itemReceived = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
+			itemQuantity = 1 + Math.floor(1/(1-Math.random()));
+			if (playerItem[itemReceived] == undefined){playerItem[itemReceived] = itemQuantity}
+			else {playerItem[itemReceived]+=itemQuantity}
+			document.getElementById('sidebar').innerHTML += `<br>You found ${itemQuantity} ${itemReceived}s.`;
+			move('neutral');
+		}
+	</script>
+	
+	<script>
+	function jackOfAllTrades(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall'){mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'wall' + daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];}
+			}
+		}
+		
+		playerItem['J']--;
+
+		document.getElementById('buttonJack').hidden = true;
+		if (playerItem['J'] > 0){document.getElementById('buttonJack').hidden = false;}
+		drawMaze();
+	}
+	</script>	
+	
+	<script>
+	function keyMaking(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][j].length == 5){
+					var hurufMaking = mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(4,5);
+					if (playerItem[hurufMaking] == undefined){playerItem[hurufMaking] = 1}
+					else {playerItem[hurufMaking]++}
+				}
+			}
+		}
+		move('neutral');
+		
+		playerItem['K']--;playerItem['E']--;playerItem['Y']--;
+
+		document.getElementById('buttonKeyMaking').hidden = true;
+		if (playerItem['K']*playerItem['E']*playerItem['Y'] > 0){document.getElementById('buttonKeyMaking').hidden = false;}
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+	function mining(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall'){mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'wallI';}
+			}
+		}
+		playerItem['I'] += Math.floor(1/(1-Math.random()));
+		
+		playerItem['M']--;playerItem['I']--;playerItem['N']--;playerItem['E']--;
+
+		document.getElementById('buttonMining').hidden = true;
+		if (playerItem['M']*playerItem['I']*playerItem['N']*playerItem['E'] > 0){document.getElementById('buttonMining').hidden = false;}
+		move('neutral');
 		drawMaze();
 	}
 	</script>
@@ -447,7 +516,7 @@
 		
         function move(direction) {
 			if (life == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t move anymore.';return}
-			if (firstStep == false){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
+			if (firstStep == false && direction != 'neutral'){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
             let newX = playerPosition.x;
             let newY = playerPosition.y;
 
@@ -463,16 +532,16 @@
 			
 			else if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) == 'wall' && maze[newY - 1][newX].length == 5) {
 				if ((maze[newY - 1][newX]).substring(4,5) == 'U'){if (playerItem['U'] != undefined){playerItem['U']++} else {playerItem['U'] = 2;}}
-                if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+                if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {if ((maze[newY - 1][newX]).substring(4,5) == 'I'){itemReceive();} newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) == 'wall' && maze[newY + 1][newX].length == 5) {
                 if ((maze[newY + 1][newX]).substring(4,5) == 'D'){if (playerItem['D'] != undefined){playerItem['D']++} else {playerItem['D'] = 2;}}
-				if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {if ((maze[newY + 1][newX]).substring(4,5) == 'I'){itemReceive();} newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) == 'wall' && maze[newY][newX - 1].length == 5) {
                 if ((maze[newY][newX - 1]).substring(4,5) == 'L'){if (playerItem['L'] != undefined){playerItem['L']++} else {playerItem['L'] = 2;}}
-				if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {if ((maze[newY][newX - 1]).substring(4,5) == 'I'){itemReceive();} newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) == 'wall' && maze[newY][newX + 1].length == 5) {
                 if ((maze[newY][newX + 1]).substring(4,5) == 'R'){if (playerItem['R'] != undefined){playerItem['R']++} else {playerItem['R'] = 2;}}
-				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {if ((maze[newY][newX + 1]).substring(4,5) == 'I'){itemReceive();} newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             }
 			
 
@@ -522,11 +591,23 @@
 			}
 			if (playerItem['G']!=undefined && playerItem['E']!=undefined && playerItem['N']!=undefined){
 				document.getElementById('buttonGeneratorBuild').hidden = true;
-				if (playerItem['G'] > 0, playerItem['E'] > 1, playerItem['N'] > 0){document.getElementById('buttonGeneratorBuild').hidden = false;}
+				if (playerItem['G'] > 0 && playerItem['E'] > 1 && playerItem['N'] > 0){document.getElementById('buttonGeneratorBuild').hidden = false;}
 			}
 			if (playerItem['H']!=undefined && playerItem['E']!=undefined && playerItem['O']!=undefined && playerItem['M']!=undefined){
 				document.getElementById('buttonHomeBuild').hidden = true;
-				if (playerItem['H'] > 0, playerItem['E'] > 1, playerItem['O'] > 0, playerItem['M'] > 0){document.getElementById('buttonHomeBuild').hidden = false;}
+				if (playerItem['H']*playerItem['E']*playerItem['O']*playerItem['M'] > 0){document.getElementById('buttonHomeBuild').hidden = false;}
+			}
+			if (playerItem['J']!=undefined){
+				document.getElementById('buttonJack').hidden = true;
+				if (playerItem['J'] > 0){document.getElementById('buttonJack').hidden = false;}
+			}
+			if (playerItem['K']!=undefined && playerItem['E']!=undefined && playerItem['Y']!=undefined){
+				document.getElementById('buttonKeyMaking').hidden = true;
+				if (playerItem['K']*playerItem['E']*playerItem['Y'] > 0){document.getElementById('buttonKeyMaking').hidden = false;}
+			}
+			if (playerItem['M']!=undefined && playerItem['I']!=undefined && playerItem['N']!=undefined && playerItem['E']!=undefined){
+				document.getElementById('buttonMining').hidden = true;
+				if (playerItem['M']*playerItem['I']*playerItem['N']*playerItem['E'] > 0){document.getElementById('buttonMining').hidden = false;}
 			}
 			
 		
