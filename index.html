@@ -97,12 +97,16 @@
 			float: right;
 			background-color: rgba(255, 255, 255, 0.7);
 			padding: 20px;
+			height: 50%;
+			overflow: scroll;
+			max-height: 400px;
 		}
 		#sidebar2 {
 			width: 20%;
 			float: Left;
 			background-color: rgba(255, 255, 255, 0.7);
 			padding: 20px;
+			height: 50%;
 		}
 
 
@@ -131,15 +135,16 @@
         <button id="buttonRight" onclick="move('right');">Right (D)</button>
 		<button id="buttonAreaClear" onclick="areaClear();" hidden >Area Clear</button>
 		<button id="buttonBomb" onclick="bomb();" hidden >Bomb</button>
-		<button id="buttonFastForward" onclick="fastForward();" hidden >Fast Forward >></button>
-		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
-		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
-		<button id="buttonKeyMaking" onclick="keyMaking();" hidden >Key-Making</button>
-		<button id="buttonMining" onclick="mining();" hidden >Mining</button>
         <br>
         <button id="buttonRight" onclick="move('down');">Down (S)</button>
 		<button id="buttonEnd" onclick="endLife();" hidden >End</button>
+		<button id="buttonFastForward" onclick="fastForward();" hidden >Fast Forward >></button>
 		<br>
+		<button id="buttonKeyMaking" onclick="keyMaking();" hidden >Key-Making</button>
+		<button id="buttonMining" onclick="mining();" hidden >Mining</button>
+		<br>
+		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
+		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
     </div>
 	</div>
 </div>
