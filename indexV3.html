@@ -114,14 +114,12 @@
 	</div>
 	<div class = "body2">
     <div id="controls">
-        <button id="buttonUp" onclick="move('up');">Up (W)</button>
+        <button id="buttonUp" onclick="move('up');">Up</button>
         <br>
-        <button id="buttonLeft" onclick="move('left');">Left (A)</button>
-        <button id="buttonRight" onclick="move('right');">Right (D)</button>
+        <button id="buttonLeft" onclick="move('left');">Left</button>
+        <button id="buttonRight" onclick="move('right');">Right</button>
         <br>
-        <button id="buttonRight" onclick="move('down');">Down (S)</button>
-		<button id="buttonEnd" onclick="endLife();" style = "visibility:hidden" >End</button>
-		<br>
+        <button id="buttonRight" onclick="move('down');">Down</button>
     </div>
 	</div>
 </div>
@@ -288,17 +286,7 @@
 		
 		firstStep = false;
 		numWarp = 0;
-		playerEnd = [false,false,false];
-		life = true;
-		
-		function endLife(){
-			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.';
-			playerItem['E']--;playerItem['N']--;playerItem['D']--;
-			life = false;
-		}
-		
         function move(direction) {
-			if (life == false){document.getElementById('sidebar').innerHTML += '<br>You can\t move anymore.';return}
 			if (firstStep == false){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
             let newX = playerPosition.x;
             let newY = playerPosition.y;
@@ -343,32 +331,24 @@
 					mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] = '';
 				}
 			}
-			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..';}}
-			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; document.getElementById('sidebar').innerHTML += '<br>You are so lonely..';}}
-			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; document.getElementById('sidebar').innerHTML += '<br>You are depressed..';}}
 			updateCollection();
 			}}
-			if (playerItem['E']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
-				document.getElementById('buttonEnd').style.visibility = 'hidden';
-				if (playerItem['E']*playerItem['N']*playerItem['D'] > 0){document.getElementById('buttonEnd').style.visibility = 'visible';}
-			}
-		
+			
             drawMaze();
         }
 		
 		// Tambahkan event listener untuk mendeteksi input tombol arah pada keyboard
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'ArrowUp' || event.key === 'w') {
+            if (event.key === 'ArrowUp') {
                 move('up');
-            } else if (event.key === 'ArrowDown' || event.key === 's') {
+            } else if (event.key === 'ArrowDown') {
                 move('down');
-            } else if (event.key === 'ArrowLeft' || event.key === 'a') {
+            } else if (event.key === 'ArrowLeft') {
                 move('left');
-            } else if (event.key === 'ArrowRight' || event.key === 'd') {
+            } else if (event.key === 'ArrowRight') {
                 move('right');
             }
         });
-		
 
         drawMaze();
     </script>
