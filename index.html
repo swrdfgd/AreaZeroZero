@@ -67,7 +67,6 @@
         }
 		
 		.teks-cantik {
-			text-transform: uppercase;
 			font-size: 2rem;
 			font-weight: bold;
 			color: #fff;
@@ -145,6 +144,8 @@
 		<br>
 		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
 		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
+		<br>
+		<button id="buttonNameArea" onclick="namingArea();" hidden >Name Area</button>
     </div>
 	</div>
 </div>
@@ -216,7 +217,7 @@
 	<script>
 	function fastForward(){
 		eventSpeed++
-		document.getElementById('sidebar').innerHTML += '<br>You feel that time here is speeding up. All events happen faster...';
+		document.getElementById('sidebar').innerHTML += '<br>You feel that the time flow here is speeding up. All events happen faster...';
 
 		playerItem['F']--;playerItem['A']--;playerItem['S']--;playerItem['T']--;
 
@@ -264,6 +265,7 @@
 	
 	<script>
 	function goHome(areaX,areaY,posY,posX){
+		if (movable == false){return}
 		if (mazeList[areaX][areaY]["map"][posY][posX] != 'home'){
 			document.getElementById('sidebar').innerHTML += '<br>This home has been destroyed.';
 			return;
@@ -338,6 +340,30 @@
 		move('neutral');
 		drawMaze();
 	}
+	</script>
+	
+	<script>
+	function namingArea(){
+		document.getElementById('sidebar').innerHTML += '<br><div id="tempText">Name this area:<br><input type="text" id="areaNaming" ><br><button onclick="nameThisArea()">Name</button></div>';
+		movable = false;
+		
+		playerItem['N']--;playerItem['A']--;playerItem['M']--;playerItem['E']--;
+
+		document.getElementById('buttonNameArea').hidden = true;
+		if (playerItem['N']*playerItem['A']*playerItem['M']*playerItem['E'] > 0){document.getElementById('buttonNameArea').hidden = false;}
+		
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+		function nameThisArea(){
+			mazeList[playerArea.x][playerArea.y]["name"] = document.getElementById("areaNaming").value;
+			mazeList[playerArea.x][playerArea.y]["permanent"] = true;
+			movable = true
+			document.getElementById('sidebar').innerHTML += 'You named this area ' + document.getElementById("areaNaming").value;
+			document.getElementById("tempText").remove();
+		}
 	</script>
 	
 	<script>
@@ -504,7 +530,8 @@
                     mazeContainer.appendChild(cell);
                 }
             }
-			document.getElementById("namaArea").innerHTML = "Area (" + playerArea.x + ", " + playerArea.y + ")";
+			document.getElementById("namaArea").innerHTML = "AREA (" + playerArea.x + ", " + playerArea.y + ")";
+			if (mazeList[playerArea.x][playerArea.y]["name"] != undefined){document.getElementById("namaArea").innerHTML = mazeList[playerArea.x][playerArea.y]["name"];}
 			updateCollection();
         }
 		
@@ -512,6 +539,7 @@
 		numWarp = 0;
 		playerEnd = [false,false,false];
 		life = true;
+		movable = true;
 		
 		function endLife(){
 			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.';
@@ -520,6 +548,7 @@
 		}
 		
         function move(direction) {
+			if (movable == false){return}
 			if (life == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t move anymore.';return}
 			if (firstStep == false && direction != 'neutral'){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
             let newX = playerPosition.x;
@@ -613,6 +642,10 @@
 			if (playerItem['M']!=undefined && playerItem['I']!=undefined && playerItem['N']!=undefined && playerItem['E']!=undefined){
 				document.getElementById('buttonMining').hidden = true;
 				if (playerItem['M']*playerItem['I']*playerItem['N']*playerItem['E'] > 0){document.getElementById('buttonMining').hidden = false;}
+			}
+			if (playerItem['N']!=undefined && playerItem['A']!=undefined && playerItem['M']!=undefined && playerItem['E']!=undefined){
+				document.getElementById('buttonNameArea').hidden = true;
+				if (playerItem['N']*playerItem['A']*playerItem['M']*playerItem['E'] > 0){document.getElementById('buttonNameArea').hidden = false;}
 			}
 			
 		
