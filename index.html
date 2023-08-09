@@ -45,6 +45,10 @@
 		.maze-home {
             background-color: #FF00FF;
         }
+		
+		.maze-portal {
+            background-color: #00FFFF;
+        }
 
 		
 		#controls {
@@ -52,11 +56,22 @@
         }
 
         button {
-            margin: 10px;
-            padding: 15px 30px;
+            margin: 5px;
+            padding: 10px 15px;
             font-size: 16px;
             border: none;
             background-color: #4CAF50; /* Warna latar belakang */
+            color: white; /* Warna teks */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+		
+		.buttonSkill {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #690FAD; /* Warna latar belakang */
             color: white; /* Warna teks */
             border-radius: 5px;
             cursor: pointer;
@@ -127,25 +142,29 @@
 	<div class = "body2">
     <div id="controls">
         <button id="buttonUp" onclick="move('up');">Up (W)</button>
-		<button id="buttonColorize" onclick="colorize();" hidden >Colorize</button>
-		<button id="buttonJack" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
+		<button id="buttonColorize" class = "buttonSkill" onclick="colorize();" hidden >Colorize</button>
+		<button id="buttonJack" class = "buttonSkill" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
         <br>
         <button id="buttonLeft" onclick="move('left');">Left (A)</button>
         <button id="buttonRight" onclick="move('right');">Right (D)</button>
-		<button id="buttonAreaClear" onclick="areaClear();" hidden >Area Clear</button>
-		<button id="buttonBomb" onclick="bomb();" hidden >Bomb</button>
+		<button id="buttonAreaClear" class = "buttonSkill" onclick="areaClear();" hidden >Area Clear</button>
+		<button id="buttonBomb" class = "buttonSkill" onclick="bomb();" hidden >Bomb</button>
         <br>
         <button id="buttonRight" onclick="move('down');">Down (S)</button>
-		<button id="buttonEnd" onclick="endLife();" hidden >End</button>
-		<button id="buttonFastForward" onclick="fastForward();" hidden >Fast Forward >></button>
+		<button id="buttonEnd" class = "buttonSkill" onclick="endLife();" hidden >End</button>
+		<button id="buttonFastForward" class = "buttonSkill" onclick="fastForward();" hidden >Fast Forward >></button>
 		<br>
-		<button id="buttonKeyMaking" onclick="keyMaking();" hidden >Key-Making</button>
-		<button id="buttonMining" onclick="mining();" hidden >Mining</button>
+		<button id="buttonKeyMaking" class = "buttonSkill" onclick="keyMaking();" hidden >Key-Making</button>
+		<button id="buttonMining" class = "buttonSkill" onclick="mining();" hidden >Mining</button>
+		<button id="buttonNameArea" class = "buttonSkill" onclick="namingArea();" hidden >Name Area</button>
 		<br>
-		<button id="buttonGeneratorBuild" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
-		<button id="buttonHomeBuild" onclick="homeBuild();" hidden >Build Home Here</button>
+		<button id="buttonGeneratorBuild" class = "buttonSkill" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
+		<button id="buttonHomeBuild" class = "buttonSkill" onclick="homeBuild();" hidden >Build Home Here</button>
+		<button id="buttonOuterClear" class = "buttonSkill" onclick="outerClear();" hidden >Outer Clear</button>
 		<br>
-		<button id="buttonNameArea" onclick="namingArea();" hidden >Name Area</button>
+		<button id="buttonPortalCreate" class = "buttonSkill" onclick="portalCreate();" hidden >Portal Create</button>
+		<button id="buttonUsePortal" class = "buttonSkill" onclick="usePortal();" hidden >Use Portal</button>
+		
     </div>
 	</div>
 </div>
@@ -367,6 +386,99 @@
 	</script>
 	
 	<script>
+	function outerClear(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (i == 1 || j == 1 || i == mazeSize[0] - 2 || j == mazeSize[1] - 2){mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'road';}
+			}
+		}
+		
+		playerItem['O']--;playerItem['U']--;playerItem['T']--;
+
+		document.getElementById('buttonOuterClear').hidden = true;
+		if (playerItem['O']*playerItem['U']*playerItem['T'] > 0){document.getElementById('buttonOuterClear').hidden = false;}
+		
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+		questionList = [
+			'Who are you?',
+			'Do you know who you are?',
+			'Why are you here?',
+			'Do you know why you are here?',
+			'Do you have any memories?',
+			'Wondering where is this place?',
+			'Wondering what is the purpose of this place?',
+			'Wondering what is the purpose of your life?',
+			'What is the purpose of you here?',
+			'How you can be here?',
+			'What happen here?',
+			'What happen to you?',
+		]
+		function questioning(){
+			document.getElementById('sidebar').innerHTML += '<br>' + questionList[Math.floor(Math.random()*questionList.length)];
+		}
+	
+	</script>
+	
+	<script>
+	
+	portal = {}
+	function portalCreate(){
+		portalStart = [playerArea.x,playerArea.y,playerPosition.x,playerPosition.y]
+		portalEnd = [];
+		
+		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+		pilihanAreaXObjek = mazeList[pilihanAreaX];
+		
+		while (Object.keys(pilihanAreaXObjek).length == 0){
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+		}
+		portalEnd.push(parseInt(pilihanAreaX));
+		pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+		portalEnd.push(parseInt(pilihanAreaY));
+		createNeighbor(portalEnd[0],portalEnd[1]);
+		
+		portalEnd.push(Math.ceil(Math.random()*(mazeSize[0]-2)));
+		portalEnd.push(Math.ceil(Math.random()*(mazeSize[1]-2)));
+		
+		portal[`${portalStart[0]}-${portalStart[1]}-${portalStart[2]}-${portalStart[3]}`] = portalEnd;
+		portal[`${portalEnd[0]}-${portalEnd[1]}-${portalEnd[2]}-${portalEnd[3]}`] = portalStart;
+		
+		mazeList[portalStart[0]][portalStart[1]]['map'][portalStart[3]][portalStart[2]] = 'portal';
+		mazeList[portalEnd[0]][portalEnd[1]]['map'][portalEnd[3]][portalEnd[2]] = 'portal';
+		
+		
+		playerItem['P']--;playerItem['O']--;playerItem['R']--;playerItem['T']--;playerItem['A']--;playerItem['L']--;
+
+		document.getElementById('buttonPortalCreate').hidden = true;
+		if (playerItem['P']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['A']*playerItem['L'] > 0){document.getElementById('buttonPortalCreate').hidden = false;}
+		
+		move('neutral');
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+		function usePortal(){
+			[areaX, areaY, posX, posY] = portal[`${playerArea.x}-${playerArea.y}-${playerPosition.x}-${playerPosition.y}`];
+			if (movable == false){return}
+			if (mazeList[areaX][areaY]["map"][posY][posX] != 'portal'){
+					document.getElementById('sidebar').innerHTML += '<br>This portal has been broken.';
+					return;
+			};
+			playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
+			maze = mazeList[playerArea.x][playerArea.y]["map"];
+			
+		
+		drawMaze();
+		}
+	</script>
+	
+	<script>
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		function spawnItem(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
@@ -415,6 +527,14 @@
 			mazeList[pilihanAreaX][pilihanAreaY]["map"] = mapBaru;
 		}
 	</script>
+	
+	<script>
+		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL']
+		function soundWhispering(){
+			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)];			
+		}
+	</script>
+	
 	<script>
 		eventList = ['mazeReconstruct','spawnItem']
 		eventSpeed = 1;
@@ -427,6 +547,9 @@
 					break;
 				case 'spawnItem':
 					spawnItem();
+					break;
+				case 'whisper':
+					soundWhispering();
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -536,10 +659,12 @@
         }
 		
 		firstStep = false;
+		firstItem = 0;
 		numWarp = 0;
 		playerEnd = [false,false,false];
 		life = true;
 		movable = true;
+		whisper = false;
 		
 		function endLife(){
 			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.';
@@ -593,9 +718,17 @@
 			if ((newY > 0)&&(newY < maze[0].length - 1)){ if ((newX > 0)&&(newX < maze.length - 1)){
 			if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
 				if (mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] != ''){
+					itemName  = '' + mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1];
 					if (playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]] == undefined){playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]] = 1 }
 					else {playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]]++}
 					mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] = '';
+					if (firstItem < 3){
+					if (firstItem == 2){document.getElementById('sidebar').innerHTML += '<br>There are so many of them here.';firstItem++}
+					if (firstItem == 1){document.getElementById('sidebar').innerHTML += '<br>The item you found might be useful.';firstItem++}
+					if (firstItem == 0){document.getElementById('sidebar').innerHTML += '<br>You found something.';firstItem++}
+					}
+					if (itemName == 'Q'){questioning();}
+					
 				}
 			}
 			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..';}}
@@ -647,7 +780,27 @@
 				document.getElementById('buttonNameArea').hidden = true;
 				if (playerItem['N']*playerItem['A']*playerItem['M']*playerItem['E'] > 0){document.getElementById('buttonNameArea').hidden = false;}
 			}
+			if (playerItem['O']!=undefined && playerItem['U']!=undefined && playerItem['T']!=undefined){
+				document.getElementById('buttonOuterClear').hidden = true;
+				if (playerItem['O']*playerItem['U']*playerItem['T'] > 0){document.getElementById('buttonOuterClear').hidden = false;}
+			}
+			if (playerItem['P']!=undefined && playerItem['O']!=undefined && playerItem['R']!=undefined && playerItem['T']!=undefined && playerItem['A']!=undefined && playerItem['L']!=undefined){
+				document.getElementById('buttonPortalCreate').hidden = true;
+				if (playerItem['P']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['A']*playerItem['L'] > 0){document.getElementById('buttonPortalCreate').hidden = false;}
+			}
 			
+			if (!whisper){
+			if (playerItem['S']!=undefined && playerItem['O']!=undefined && playerItem['U']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
+				if (playerItem['S']*playerItem['O']*playerItem['U']*playerItem['N']*playerItem['D'] > 0){
+					whisper = true; eventList.push('whisper');
+				}
+			}
+			}
+			
+			document.getElementById('buttonUsePortal').hidden = true;
+			if (maze[playerPosition.y][playerPosition.x] == 'portal'){
+				document.getElementById('buttonUsePortal').hidden = false;
+			}
 		
             drawMaze();
         }
@@ -670,7 +823,8 @@
     </script>
 
 <div id="sidebar">
-You wake up in this unknown place...    
+You wake up in this unknown place...<br>
+You realize you are holding some explosive items and colorful things.
 </div>
 
 <div id="sidebar2">
