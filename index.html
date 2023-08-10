@@ -81,6 +81,11 @@
             background-color: #45a049; /* Warna latar belakang saat tombol dihover */
         }
 		
+		.buttonSkill:hover {
+            background-color: white; /* Warna latar belakang saat tombol dihover */
+			color: black;
+        }
+		
 		.teks-cantik {
 			font-size: 2rem;
 			font-weight: bold;
@@ -141,30 +146,43 @@
 	</div>
 	<div class = "body2">
     <div id="controls">
+		<div>
         <button id="buttonUp" onclick="move('up');">Up (W)</button>
 		<button id="buttonColorize" class = "buttonSkill" onclick="colorize();" hidden >Colorize</button>
 		<button id="buttonJack" class = "buttonSkill" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
-        <br>
+		<button id="buttonWarp" class = "buttonSkill" onclick="warp();" hidden >Warp</button>
+        </div>
+		<div>
         <button id="buttonLeft" onclick="move('left');">Left (A)</button>
         <button id="buttonRight" onclick="move('right');">Right (D)</button>
 		<button id="buttonAreaClear" class = "buttonSkill" onclick="areaClear();" hidden >Area Clear</button>
 		<button id="buttonBomb" class = "buttonSkill" onclick="bomb();" hidden >Bomb</button>
-        <br>
+        </div>
+		<div>
         <button id="buttonRight" onclick="move('down');">Down (S)</button>
 		<button id="buttonEnd" class = "buttonSkill" onclick="endLife();" hidden >End</button>
 		<button id="buttonFastForward" class = "buttonSkill" onclick="fastForward();" hidden >Fast Forward >></button>
-		<br>
+		</div>
+		<div>
 		<button id="buttonKeyMaking" class = "buttonSkill" onclick="keyMaking();" hidden >Key-Making</button>
 		<button id="buttonMining" class = "buttonSkill" onclick="mining();" hidden >Mining</button>
 		<button id="buttonNameArea" class = "buttonSkill" onclick="namingArea();" hidden >Name Area</button>
-		<br>
+		</div>
+		<div>
 		<button id="buttonGeneratorBuild" class = "buttonSkill" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
 		<button id="buttonHomeBuild" class = "buttonSkill" onclick="homeBuild();" hidden >Build Home Here</button>
 		<button id="buttonOuterClear" class = "buttonSkill" onclick="outerClear();" hidden >Outer Clear</button>
-		<br>
+		</div>
+		<div>
 		<button id="buttonPortalCreate" class = "buttonSkill" onclick="portalCreate();" hidden >Portal Create</button>
 		<button id="buttonUsePortal" class = "buttonSkill" onclick="usePortal();" hidden >Use Portal</button>
-		
+		<button id="buttonTeleport" class = "buttonSkill" onclick="teleport();" hidden >Teleport</button>
+		</div>
+		<div>
+		<button id="buttonVortex" class = "buttonSkill" onclick="vortex();" hidden >Vortex</button>
+		<button id="buttonXray" class = "buttonSkill" onclick="xray();" hidden >X Ray</button>
+		<button id="buttonZeroBack" class = "buttonSkill" onclick="zeroBack();" hidden >Back to Zero</button>
+		</div>
     </div>
 	</div>
 </div>
@@ -479,6 +497,157 @@
 	</script>
 	
 	<script>
+	function teleport(){
+		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t teleport now.'; return}
+		teleportDestination = [];
+		
+		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+		pilihanAreaXObjek = mazeList[pilihanAreaX];
+		
+		while (Object.keys(pilihanAreaXObjek).length == 0){
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+		}
+		teleportDestination.push(parseInt(pilihanAreaX));
+		pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+		teleportDestination.push(parseInt(pilihanAreaY));
+		createNeighbor(teleportDestination[0],teleportDestination[1]);
+		
+		teleportDestination.push(Math.ceil(Math.random()*(mazeSize[0]-2)));
+		teleportDestination.push(Math.ceil(Math.random()*(mazeSize[1]-2)));
+		
+		[areaX, areaY, posX, posY] = teleportDestination;
+		playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
+		maze = mazeList[playerArea.x][playerArea.y]["map"];
+		
+		playerItem['T']--;playerItem['E']-=2;playerItem['L']--;
+
+		document.getElementById('buttonTeleport').hidden = true;
+		if (playerItem['T']*playerItem['L']*(playerItem['E']-1) > 0){document.getElementById('buttonTeleport').hidden = false;}
+		
+		drawMaze();
+		bomb();outerClear();
+	}
+	</script>
+	
+	<script>
+	function vortex(){
+		for (let i = playerPosition.y - 2; i < playerPosition.y + 3; i++){
+			if (mazeList[playerArea.x][playerArea.y]["item"] == undefined){mazeList[playerArea.x][playerArea.y]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			for (let j = playerPosition.x - 2; j < playerPosition.x + 3; j++){
+				if (i*j > 0  && i < mazeSize[0] - 1 && j < mazeSize[1] - 1 ){
+					if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][j].length == 5){
+						mazeList[playerArea.x][playerArea.y]["item"][i-1][j-1] = mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(4,5);
+					}
+					mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'road';
+				}
+			}
+		}
+		playerItem['V']--;playerItem['O']--;playerItem['R']--;playerItem['T']--;playerItem['E']--;playerItem['X']--;
+
+		document.getElementById('buttonVortex').hidden = true;
+		if (playerItem['V']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['E']*playerItem['X']){document.getElementById('buttonVortex').hidden = false;}
+		drawMaze();
+	}
+	</script>
+	
+	<script>
+	function warp(){
+		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t warp now.'; return}
+		currentPosition = [playerPosition.x, playerPosition.y];
+		warpDestination = [];
+		warpDestination =  [currentPosition[0], currentPosition[1]];
+		warpData = mazeList[playerArea.x][playerArea.y]["warps"]
+		
+		while (warpDestination[0] == currentPosition[0] && warpDestination[1] == currentPosition[1]){
+			warpChosen = Math.floor(Math.random()*4);
+			switch (warpChosen){
+				case 0:
+					warpDestination = [1,warpData[0]];
+					break;
+				case 1:
+					warpDestination = [mazeSize[0]-2,warpData[1]];
+					break;
+				case 2:
+					warpDestination = [warpData[2],1];
+					break;
+				case 3:
+					warpDestination = [warpData[3],mazeSize[1]-2];
+					break;
+			}
+		} 
+		
+		[posX, posY] = warpDestination;
+		playerPosition.x = posX, playerPosition.y = posY;
+		
+		playerItem['W']--;
+
+		document.getElementById('buttonWarp').hidden = true;
+		if (playerItem['W'] > 0){document.getElementById('buttonWarp').hidden = false;}
+		
+		drawMaze();
+
+	}
+	</script>
+	
+	<script>
+	function xray(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			if (mazeList[playerArea.x][playerArea.y]["item"] == undefined){mazeList[playerArea.x][playerArea.y]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+					
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][i].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][i].length == 5){
+					mazeList[playerArea.x][playerArea.y]["item"][i-1][i-1] = mazeList[playerArea.x][playerArea.y]["map"][i][i].substring(4,5);
+				}
+				mazeList[playerArea.x][playerArea.y]["map"][i][i] = 'road';
+				
+			
+		}
+		playerItem['X']--;playerItem['R']--;playerItem['A']--;playerItem['Y']--;
+
+		document.getElementById('buttonXray').hidden = true;
+		if (playerItem['X']*playerItem['R']*playerItem['A']*playerItem['Y'] > 0){document.getElementById('buttonXray').hidden = false;}
+		drawMaze();
+	}
+	</script>	
+	
+	<script>
+		smileList = [
+			'You are smiling..',
+			'You manically smile..',
+			'You are laughing..',
+			'You are manically laughing..',
+			'You feel happy.',
+			'You are feeling happy..',
+			'You are feeling a little bit happy..',
+		]
+		function smile(){
+			document.getElementById('sidebar').innerHTML += '<br>' + smileList[Math.floor(Math.random()*smileList.length)];
+		}
+	
+	</script>
+	
+	<script>
+	function zeroBack(){
+		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t teleport now.'; return}
+
+		
+		[areaX, areaY, posX, posY] = [0,0,3,3];
+		playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
+		maze = mazeList[playerArea.x][playerArea.y]["map"];
+		
+		playerItem['Z']--;playerItem['E']--;playerItem['R']--;playerItem['O']--;
+
+		document.getElementById('buttonZeroBack').hidden = true;
+		if (playerItem['Z']*playerItem['E']*playerItem['R']*playerItem['O'] > 0){document.getElementById('buttonZeroBack').hidden = false;}
+		
+		drawMaze();
+		bomb();outerClear();
+		
+		 
+	}
+	</script>
+	
+	<script>
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		function spawnItem(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
@@ -529,11 +698,12 @@
 	</script>
 	
 	<script>
-		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL']
+		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY']
 		function soundWhispering(){
 			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)];			
 		}
 	</script>
+	
 	
 	<script>
 		eventList = ['mazeReconstruct','spawnItem']
@@ -728,6 +898,7 @@
 					if (firstItem == 0){document.getElementById('sidebar').innerHTML += '<br>You found something.';firstItem++}
 					}
 					if (itemName == 'Q'){questioning();}
+					if (itemName == 'Y'){smile();}
 					
 				}
 			}
@@ -788,6 +959,26 @@
 				document.getElementById('buttonPortalCreate').hidden = true;
 				if (playerItem['P']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['A']*playerItem['L'] > 0){document.getElementById('buttonPortalCreate').hidden = false;}
 			}
+			if (playerItem['T']!=undefined && playerItem['E']!=undefined && playerItem['L']!=undefined){
+				document.getElementById('buttonTeleport').hidden = true;
+				if (playerItem['T']*playerItem['L']*(playerItem['E']-1) > 0){document.getElementById('buttonTeleport').hidden = false;}
+			}
+			if (playerItem['V']!=undefined && playerItem['O']!=undefined && playerItem['R']!=undefined && playerItem['T']!=undefined && playerItem['E']!=undefined && playerItem['X']!=undefined){
+				document.getElementById('buttonVortex').hidden = true;
+				if (playerItem['V']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['E']*playerItem['X'] > 0){document.getElementById('buttonVortex').hidden = false;}
+			}
+			if (playerItem['W']!=undefined){
+				document.getElementById('buttonWarp').hidden = true;
+				if (playerItem['W'] > 0){document.getElementById('buttonWarp').hidden = false;}
+			}
+			if (playerItem['X']!=undefined && playerItem['R']!=undefined && playerItem['A']!=undefined && playerItem['Y']!=undefined){
+				document.getElementById('buttonXray').hidden = true;
+				if (playerItem['X']*playerItem['R']*playerItem['A']*playerItem['Y'] > 0){document.getElementById('buttonXray').hidden = false;}
+			}
+			if (playerItem['Z']!=undefined && playerItem['E']!=undefined && playerItem['R']!=undefined && playerItem['O']!=undefined){
+				document.getElementById('buttonZeroBack').hidden = true;
+				if (playerItem['Z']*playerItem['E']*playerItem['R']*playerItem['O'] > 0){document.getElementById('buttonZeroBack').hidden = false;}
+			}
 			
 			if (!whisper){
 			if (playerItem['S']!=undefined && playerItem['O']!=undefined && playerItem['U']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
@@ -825,6 +1016,7 @@
 <div id="sidebar">
 You wake up in this unknown place...<br>
 You realize you are holding some explosive items and colorful things.
+The only thing you can remember is someone tells you to collect the SOUND.
 </div>
 
 <div id="sidebar2">
@@ -835,7 +1027,9 @@ Your Collection
 	function updateCollection(){
 		document.getElementById('sidebar2').innerHTML = "Your Collection<br>";
 		for (item in Object.keys(playerItem)){
+			if (playerItem[Object.keys(playerItem)[item]] > 0){
 			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
+			}
 		}
 	}
 	updateCollection();
