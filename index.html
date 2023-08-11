@@ -712,12 +712,61 @@
 	</script>
 	
 	<script>
-		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY']
+		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT']
 		function soundWhispering(){
 			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)];			
 		}
 	</script>
 	
+	<script>
+		function createExitDoor(){
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+			if (Object.keys(pilihanAreaXObjek).length == 0){createExitDoor(); return}
+			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			pilihanAreaX = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaX);
+			pilihanAreaX = pilihanAreaX + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
+			pilihanAreaY = pilihanAreaY + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
+			
+			if (mazeList[pilihanAreaX] == undefined){}
+			else if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){}
+			else if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] != undefined){
+				if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] == true){createExitDoor(); return}
+			}
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){createExitDoor(); return}
+			
+			createNeighbor(pilihanAreaX,pilihanAreaY-1);
+			createNeighbor(pilihanAreaX,pilihanAreaY+1);
+			createNeighbor(pilihanAreaX-1,pilihanAreaY);
+			createNeighbor(pilihanAreaX+1,pilihanAreaY);
+			
+			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			doorPlaced = false;
+			while (doorPlaced == false){
+				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
+				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
+				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
+					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = 'exitDoor';
+					doorPlaced = true;
+				}
+			}
+			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = true;
+			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>It tells you some numbers<br>' + pilihanAreaX + ' ' + pilihanAreaY;
+			
+		}
+	</script>
+	
+	<script>
+		function exit(){
+			movable = false;
+			doorPosition = [playerPosition.x, playerPosition.y];
+			playerPosition.x = -2; playerPosition.y = -2;
+			drawMaze();
+			document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You are happy and remember everything and go home.<br>HAPPY ENDING';
+			
+		}
+	</script>
 	
 	<script>
 		eventList = ['mazeReconstruct','spawnItem']
@@ -742,7 +791,10 @@
 	</script>
 	<script>
 		function createNeighbor(a,b){
-			if (mazeList[a][b]["neighbor"] == 1){return}
+			if (mazeList[a] == undefined){}
+			else if (mazeList[a][b] == undefined){}
+			else if (mazeList[a][b]["neighbor"] == 1){return}
+			
 			daftarTetangga = [[0,1],[0,-1],[-1,0],[1,0]];
 			for (i = 0; i < 4; i++){
 				a2 = a + daftarTetangga[i][0];
@@ -775,6 +827,8 @@
 					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps}
 				}
 			}
+			if (mazeList[a] == undefined){return}
+			else if (mazeList[a][b] == undefined){return}
 			mazeList[a][b]["neighbor"] = 1;
 		}
 	</script>
@@ -825,7 +879,10 @@
 					
 					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
 					if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
-							if (mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1] != ''){cell.innerHTML = mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1]};
+							if (mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1] != ''){
+								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1]
+							};
+							if (cell.innerHTML == "exitDoor"){cell.innerHTML = '<span style="font-size: 45px;">🚪</span>';cell.setAttribute("id","doorPlace");}
 					}
 					}}
 					if (mazeList[playerArea.x][playerArea.y]["color"]!=undefined && maze[row][col] == 'road'){
@@ -849,6 +906,7 @@
 		life = true;
 		movable = true;
 		whisper = false;
+		exitDoorExist = false;
 		
 		function endLife(){
 			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.';
@@ -913,6 +971,7 @@
 					}
 					if (itemName == 'Q'){questioning();}
 					if (itemName == 'Y'){smile();}
+					if (itemName == 'exitDoor'){mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] = 'exitDoor'; exit(); }
 					
 				}
 			}
@@ -1002,6 +1061,14 @@
 			}
 			}
 			
+			if (!exitDoorExist){
+			if (playerItem['E']!=undefined && playerItem['X']!=undefined && playerItem['I']!=undefined && playerItem['T']!=undefined){
+				if (playerItem['E']*playerItem['X']*playerItem['I']*playerItem['T'] > 0){
+					exitDoorExist = true; createExitDoor();
+				}
+			}
+			}
+			
 			document.getElementById('buttonUsePortal').hidden = true;
 			if (maze[playerPosition.y][playerPosition.x] == 'portal'){
 				document.getElementById('buttonUsePortal').hidden = false;
@@ -1041,7 +1108,7 @@ Your Collection
 	function updateCollection(){
 		document.getElementById('sidebar2').innerHTML = "Your Collection<br>";
 		for (item in Object.keys(playerItem)){
-			if (playerItem[Object.keys(playerItem)[item]] > 0){
+			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
 			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
 			}
 		}
