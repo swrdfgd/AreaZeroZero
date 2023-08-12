@@ -498,6 +498,7 @@
 			else {
 				if (pilihanPertanyaan == "why?" && playerAnsweredQuestion["why"]){return}
 				jawaban = jawabanPlayer[pilihanPertanyaan];
+				playerAnsweredQuestion[pilihanPertanyaan];
 			}
 			
 			
@@ -832,6 +833,48 @@
 	</script>
 	
 	<script>
+		function summonWhisperer(){
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+			if (Object.keys(pilihanAreaXObjek).length == 0){summonWhisperer(); return}
+			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			pilihanAreaX = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaX);
+			pilihanAreaX = pilihanAreaX + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
+			pilihanAreaY = pilihanAreaY + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
+			
+			if (mazeList[pilihanAreaX] == undefined){}
+			else if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){}
+			else if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] != undefined){
+				if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] == true){summonWhisperer(); return}
+			}
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){summonWhisperer(); return}
+			
+			createNeighbor(pilihanAreaX,pilihanAreaY-1);
+			createNeighbor(pilihanAreaX,pilihanAreaY+1);
+			createNeighbor(pilihanAreaX-1,pilihanAreaY);
+			createNeighbor(pilihanAreaX+1,pilihanAreaY);
+			
+			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			whispererSummoned = false;
+			while (whispererSummoned == false){
+				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
+				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
+				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
+					mazeList[pilihanAreaX][pilihanAreaY]["person"][pilihanPosY-1][pilihanPosX-1] = 'whisperer';
+					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = '';
+					whispererSummoned = true;
+				}
+			}
+			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = true;
+			document.getElementById('sidebar').innerHTML += '';
+			whispererPosition = {areaX:pilihanAreaX, areaY: pilihanAreaY, x:pilihanPosX, y:pilihanPosY};
+			
+		}
+	</script>
+	
+	<script>
 		eventList = ['mazeReconstruct','spawnItem']
 		eventSpeed = 1;
 		function eventStart(){
@@ -850,6 +893,8 @@
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
 			}
+			
+			
 		}
 	</script>
 	<script>
@@ -947,6 +992,12 @@
 							};
 							if (cell.innerHTML == "exitDoor"){cell.innerHTML = '<span style="font-size: 45px;">🚪</span>';cell.setAttribute("id","doorPlace");}
 					}
+					if (mazeList[playerArea.x][playerArea.y]["person"]!=undefined){
+							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] != ''){
+								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]
+							};
+							if (cell.innerHTML == "whisperer"){cell.innerHTML = '(0,0)';cell.setAttribute("id","whispererPlace");}
+					}
 					}}
 					if (mazeList[playerArea.x][playerArea.y]["color"]!=undefined && maze[row][col] == 'road'){
 							cell.style.backgroundColor = "#" + mazeList[playerArea.x][playerArea.y]["color"];
@@ -970,6 +1021,7 @@
 		movable = true;
 		whisper = false;
 		exitDoorExist = false;
+		whispererExist = false
 		
 		function endLife(){
 			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.<br>COMMIT ENDING';
@@ -1130,6 +1182,30 @@
 					exitDoorExist = true; createExitDoor();
 				}
 			}
+			}
+			
+			if (!whispererExist){
+			if (playerItem['W']!=undefined && playerItem['H']!=undefined && playerItem['I']!=undefined && playerItem['S']!=undefined && playerItem['P']!=undefined && playerItem['E']!=undefined && playerItem['R']!=undefined){
+				if (playerItem['W']*playerItem['H']*playerItem['I']*playerItem['S']*playerItem['P']*playerItem['E']*playerItem['R'] > 0){
+					whispererExist = true; summonWhisperer();
+				}
+			}
+			}
+			
+			if (whispererExist){
+				if (playerArea.x == whispererPosition.areaX && playerArea.y == whispererPosition.areaY && playerPosition.x == whispererPosition.x && playerPosition.y == whispererPosition.y){
+					playerPosition.x = -2; playerPosition.y = -2;
+					movable = false;
+					
+					for (i = 0; i < mazeSize[0] ; i++){
+						for (j = 0; j < mazeSize[1] ; j++){
+							maze[i][j] = 'wall';
+						}
+					}
+					drawMaze();
+					document.getElementById('sidebar').innerHTML += '<br>You found the whiperer.<br>The whisperer killed you.<br>You are dead.<br>WHISPERER ENDING';
+					
+				}
 			}
 			
 			document.getElementById('buttonUsePortal').hidden = true;
