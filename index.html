@@ -478,6 +478,7 @@
 	<script>
 		playerIdentity = {}
 		function answerQuestion(){
+			if (playerAskingQuestion.length == 0){return}
 			if (playerIdentity["name"] == undefined){playerIdentity["name"] = identityNames[Math.floor(Math.random()*identityNames.length)];}
 			jawabanPlayer = identityList[playerIdentity["name"]];
 			if (playerAskingQuestion.length == 0){return}
