@@ -436,23 +436,73 @@
 	
 	<script>
 		questionList = [
-			'Who are you?',
-			'Do you know who you are?',
-			'Why are you here?',
-			'Do you know why you are here?',
-			'Do you have any memories?',
-			'Wondering where is this place?',
-			'Wondering what is the purpose of this place?',
-			'Wondering what is the purpose of your life?',
-			'What is the purpose of you here?',
-			'How you can be here?',
-			'What happen here?',
-			'What happen to you?',
+			['Who are you?','who'],
+			['Do you know who you are?','who?'],
+			['Why are you here?','why'],
+			['Do you know why you are here?','why?'],
+			['Do you have any memories?','memory'],
+			['Wondering where is this place?','where'],
+			['Wondering what is the purpose of this place?','placePurpose'],
+			['Wondering what is the purpose of your life?','purposeLife'],
+			['What is the purpose of you here?','purposeHere'],
+			['How you can be here?','how'],
+			['What happen here?','what'],
+			['What happen to you?','whatYou'],
 		]
+		identityList = {
+			"teacher": {'who': 'You remembered you are a teacher,', 'who?': ['You remembered you were teaching your students about SOUND in the past.','You remembered you were teaching your some people about SOUND in the past.'], 'why':'You remembered you are here because you want to find your son, he is a strong soldier.', 'why?':'You remembered you have to find someone here.', 'memory':['The BOMB reminded you to your son.','The BOMB reminded you to someone you forget who he is.'], 'where':'You remembered this place is called Home of the Mu.', 'placePurpose':'You remembered this place is so sacred to the local. Anyone is prohibited to enter this place since it is so dangerous.', 'purposeLife':'You remembered you want to have happy life with your family.', 'how':'You remembered you came here by yourself alone.', 'what':'You remembered the rumor about a monster in this place.', 'whatYou':'You remembered when you came here you saw a monster and then fell asleep.'},
+			"soldier": {'who': 'You remembered you are a soldier,', 'who?': ['You remembered you were using BOMB in the past when protecting your country.','You remembered you were using BOMB in the past.'], 'why':'You remembered you are here because you want to find your brother, he is a police who got lost when investigating something here.', 'why?':'You remembered you have to find someone here.', 'memory':['The BOMB reminded you about your past.','The BOMB reminded you about your past.'], 'where':'You remembered this place is called Home of the Mu.', 'placePurpose':'You remembered this place is so sacred to the local. Anyone is prohibited to enter this place since it is so dangerous.', 'purposeLife':'You remembered about your dream to protect your country.', 'how':'You remembered you came here by yourself alone with some preperations.', 'what':'You remembered the rumor about a monster in this place.', 'whatYou':'You remembered when you came here you saw a monster and then fell asleep.'},
+			"police": {'who': 'You remembered you are a police,', 'who?': ['You remembered when your brother teach you how to use gun.','You remembered the corruption in your country.'], 'why':'You remembered you are here because you want to investigate and find about the lost local farmer.', 'why?':'You remembered you have to find someone here.', 'memory':['The BOMB reminded to your brother.','The BOMB reminded you to your brother.'], 'where':'You remembered this place is called Home of the Mu.', 'placePurpose':'You remembered this place is so sacred to the local. Anyone is prohibited to enter this place since it is so dangerous.', 'purposeLife':'You remembered about your dream to protect your family, friends, and country.', 'how':'You remembered you came here by yourself alone with some preperations.', 'what':'You remembered the rumor about a monster in this place.', 'whatYou':'You remembered when you came here you saw a monster and then fell asleep.'},
+			"doctor": {'who': 'You remembered you are a doctor,', 'who?': ['You remembered you were doing XRAY to your patient.','You remembered something about mysterious GENE.'], 'why':'You remembered you are here because you want to investigate and find about the lost local farmer.', 'why?':'You remembered you want to find someone here.', 'memory':['This place seem familiar with this place, you have some kind of feeling, a dangerous thing is here.','You seem so familiar with this place.'], 'where':'You remembered this place is called Home of the Mu.', 'placePurpose':'You remembered this place is so sacred to the local. Anyone is prohibited to enter this place since it is so dangerous.', 'purposeLife':'You remembered about your dream to become a doctor so everyone will be happy, strong, and healthy.', 'how':'You remembered you came here by yourself alone with some preperations.', 'what':'You remembered the rumor about a monster in this place.', 'whatYou':'You remembered when you came here you saw a monster and then fell asleep.'},
+			"farmer": {'who': 'You remembered you are a farmer,', 'who?': ['You remembered about your farmland, wife, and kids.','You remembered when you used to relax on the edge of a rice field.'], 'why':'You remembered you are here because you want to find the rumored treasure told by the miner.', 'why?':'You remembered you want to find something here.', 'memory':['You miss your family.','The BOMB reminded you about your past.'], 'where':'You remembered this place is called Mu Balla.', 'placePurpose':'You remembered this place is so sacred to your neighborhood. Here is the place you and the local people make sacrifices.', 'purposeLife':'You remembered you want to have happy life with your family.', 'how':'You remembered you came here by following mysterious creature.', 'what':'You remembered the rumor about gold and magic in this place.', 'whatYou':'You remembered when you came here you saw a monster, It punched you until you fainted.'},
+			"miner": {'who': 'You remembered you are a miner,', 'who?': ['You remembered you are working here to MINE here on government order.','You remembered you are here because the corrupt told you.'], 'why':'You remembered you are here because you want to find an abandoned mineshaft.', 'why?':'You remembered you want to find something here.', 'memory':['You just can\'t remember so much about your life.','You just can\'t remember so much about your life.'], 'where':'You remembered this place is called Mu Balla.', 'placePurpose':'You remembered this place is so sacred to your neighborhood. Here is the place you and the local people make sacrifices.', 'purposeLife':'You remembered you have no purpose in your life.', 'how':'You remembered you came here by yourself alone with some preperations.', 'what':'You see this place is a cave but somewhat looks like building or facility.', 'whatYou':'You remembered you came here everyday but today you seem like to have memory loss.'},
+			"null": {'who': 'You remembered you are a something,', 'who?': ['You remembered something about your GENE.','You remember something about GENE and XRAY.'], 'why':'You remebered you are here because you live here.', 'why?':'You remembered you have to protect your country but why?', 'memory':['You remembered someone. He looks like a doctor in your imagination.','This place feels so familiar to you.'], 'where':'You remembered this place is called Hokker Secret Laboratory.', 'placePurpose':'You remembered this place is a place to do so many experiments.', 'purposeLife':'You remembered about your dream to protect your country.', 'how':'You remembered you were always here.', 'what':'You remembered this place is abandoned.', 'whatYou':'You remember you fell asleep as always in this place but today you seem like to have memory loss.'},
+			
+		};
+		identityNames = Object.keys(identityList)
+		playerAnsweredQuestion = {
+		}
+		playerAskingQuestion = []
+		
+		for (let i = 0; i < questionList.length; i++){
+			playerAnsweredQuestion[questionList[i][1]] = false;
+		}
 		function questioning(){
-			document.getElementById('sidebar').innerHTML += '<br>' + questionList[Math.floor(Math.random()*questionList.length)];
+			questionSelected = questionList[Math.floor(Math.random()*questionList.length)]
+			document.getElementById('sidebar').innerHTML += '<br>' + questionSelected[0];
+			if (!playerAnsweredQuestion[questionSelected[1]]){playerAskingQuestion.push(questionSelected[1]);}
 		}
 	
+	</script>
+	
+	<script>
+		playerIdentity = {}
+		function answerQuestion(){
+			if (playerIdentity["name"] == undefined){playerIdentity["name"] = identityNames[Math.floor(Math.random()*identityNames.length)];}
+			jawabanPlayer = identityList[playerIdentity["name"]];
+			if (playerAskingQuestion.length == 0){return}
+			pilihanPertanyaan = playerAskingQuestion[Math.floor(Math.random()*playerAskingQuestion.length)]
+			if (playerAnsweredQuestion[pilihanPertanyaan]){return}
+			
+			if (pilihanPertanyaan == "who?"){
+				jawaban = jawabanPlayer["who?"][1];
+				if (playerAnsweredQuestion["who"]){jawaban = jawabanPlayer["who?"][0]}
+				playerAnsweredQuestion["who?"] = true;
+			}
+			else if (pilihanPertanyaan == "memory"){
+				jawaban = jawabanPlayer["memory"][1];
+				if (playerAnsweredQuestion["why"]){jawaban = jawabanPlayer["memory"][0]}
+				playerAnsweredQuestion["memory"] = true;
+			}
+			else {
+				if (pilihanPertanyaan == "why?" && playerAnsweredQuestion["why"]){return}
+				jawaban = jawabanPlayer[pilihanPertanyaan];
+			}
+			
+			
+			document.getElementById('sidebar').innerHTML += '<br>' + jawaban;
+			
+		}
 	</script>
 	
 	<script>
@@ -613,6 +663,10 @@
 					mazeList[playerArea.x][playerArea.y]["item"][i-1][i-1] = mazeList[playerArea.x][playerArea.y]["map"][i][i].substring(4,5);
 				}
 				mazeList[playerArea.x][playerArea.y]["map"][i][i] = 'road';
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i].length == 5){
+					mazeList[playerArea.x][playerArea.y]["item"][i-1][mazeSize[1] - 1 - i - 1] = mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i - 1].substring(4,5);
+				}
+				mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i] = 'road';
 				
 			
 		}
@@ -759,12 +813,20 @@
 	
 	<script>
 		function exit(){
+		    tanyaPintu = Object.keys(playerAnsweredQuestion);
+			tanyaPintuTerpilih = tanyaPintu[Math.floor(Math.random()*tanyaPintu.length)];
 			movable = false;
 			doorPosition = [playerPosition.x, playerPosition.y];
 			playerPosition.x = -2; playerPosition.y = -2;
 			drawMaze();
-			document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You are happy and remember everything and go home.<br>HAPPY ENDING';
-			
+			if (playerAnsweredQuestion[tanyaPintuTerpilih] && playerIdentity["name"] != undefined){
+				if (playerIdentity["name"] == 'null'){
+					document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and want revenge.<br>SOMETHING ENDING';
+				}
+				document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and go home.<br>You don\'t want to go back to that place again.<br>MEMORY ENDING';
+				return
+			}
+			document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place but you still have memory loss.<br>You are walking and then find a village.<br>You are starting a new life.<br>MEMORY LOSS ENDING';
 		}
 	</script>
 	
@@ -909,7 +971,7 @@
 		exitDoorExist = false;
 		
 		function endLife(){
-			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.';
+			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.<br>COMMIT ENDING';
 			playerItem['E']--;playerItem['N']--;playerItem['D']--;
 			life = false;
 		}
@@ -933,16 +995,16 @@
 			
 			else if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) == 'wall' && maze[newY - 1][newX].length == 5) {
 				if ((maze[newY - 1][newX]).substring(4,5) == 'U'){if (playerItem['U'] != undefined){playerItem['U']++} else {playerItem['U'] = 2;}}
-                if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {if ((maze[newY - 1][newX]).substring(4,5) == 'I'){itemReceive();} newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+                if (playerItem[(maze[newY - 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY - 1][newX]).substring(4,5)] > 0) {if ((maze[newY - 1][newX]).substring(4,5) == 'I'){itemReceive();} if ((maze[newY - 1][newX]).substring(4,5) == 'Q'){answerQuestion();} newY -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) == 'wall' && maze[newY + 1][newX].length == 5) {
                 if ((maze[newY + 1][newX]).substring(4,5) == 'D'){if (playerItem['D'] != undefined){playerItem['D']++} else {playerItem['D'] = 2;}}
-				if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {if ((maze[newY + 1][newX]).substring(4,5) == 'I'){itemReceive();} newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY + 1][newX]).substring(4,5)] != undefined){if (playerItem[(maze[newY + 1][newX]).substring(4,5)] > 0) {if ((maze[newY + 1][newX]).substring(4,5) == 'I'){itemReceive();} if ((maze[newY + 1][newX]).substring(4,5) == 'Q'){answerQuestion();} newY += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) == 'wall' && maze[newY][newX - 1].length == 5) {
                 if ((maze[newY][newX - 1]).substring(4,5) == 'L'){if (playerItem['L'] != undefined){playerItem['L']++} else {playerItem['L'] = 2;}}
-				if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {if ((maze[newY][newX - 1]).substring(4,5) == 'I'){itemReceive();} newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY][newX - 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX - 1]).substring(4,5)] > 0) {if ((maze[newY][newX - 1]).substring(4,5) == 'I'){itemReceive();} if ((maze[newY][newX - 1]).substring(4,5) == 'Q'){answerQuestion();} newX -= 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) == 'wall' && maze[newY][newX + 1].length == 5) {
                 if ((maze[newY][newX + 1]).substring(4,5) == 'R'){if (playerItem['R'] != undefined){playerItem['R']++} else {playerItem['R'] = 2;}}
-				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {if ((maze[newY][newX + 1]).substring(4,5) == 'I'){itemReceive();} newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {if ((maze[newY][newX + 1]).substring(4,5) == 'I'){itemReceive();} if ((maze[newY][newX + 1]).substring(4,5) == 'Q'){answerQuestion();} newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
             }
 			
 
