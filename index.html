@@ -666,7 +666,7 @@
 				}
 				mazeList[playerArea.x][playerArea.y]["map"][i][i] = 'road';
 				if (mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i].length == 5){
-					mazeList[playerArea.x][playerArea.y]["item"][i-1][mazeSize[1] - 1 - i - 1] = mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i - 1].substring(4,5);
+					mazeList[playerArea.x][playerArea.y]["item"][i-1][mazeSize[1] - 1 - i - 1] = mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i].substring(4,5);
 				}
 				mazeList[playerArea.x][playerArea.y]["map"][i][mazeSize[1] - 1 - i] = 'road';
 				
