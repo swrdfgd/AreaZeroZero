@@ -218,7 +218,7 @@
 
 		document.getElementById('buttonAreaClear').hidden = true;
 		if (playerItem['A'] > 1 && playerItem['R'] > 0 && playerItem['E'] > 0){document.getElementById('buttonAreaClear').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>
 
@@ -239,7 +239,7 @@
 
 		document.getElementById('buttonBomb').hidden = true;
 		if (playerItem['B'] > 1 && playerItem['O'] > 0 && playerItem['M'] > 0){document.getElementById('buttonBomb').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -261,7 +261,7 @@
 
 		document.getElementById('buttonColorize').hidden = true;
 		if (playerItem['C'] > 0){document.getElementById('buttonColorize').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -274,7 +274,7 @@
 
 		document.getElementById('buttonFastForward').hidden = true;
 		if (playerItem['F']*playerItem['A']*playerItem['S']*playerItem['T'] > 0){document.getElementById('buttonFastForward').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -287,7 +287,7 @@
 
 		document.getElementById('buttonGeneratorBuild').hidden = true;
 		if (playerItem['G'] > 0, playerItem['E'] > 1, playerItem['N'] > 0){document.getElementById('buttonGeneratorBuild').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -310,7 +310,7 @@
 
 		document.getElementById('buttonHomeBuild').hidden = true;
 		if (playerItem['H']*playerItem['E']*playerItem['O']*playerItem['M'] > 0){document.getElementById('buttonHomeBuild').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -350,7 +350,7 @@
 
 		document.getElementById('buttonJack').hidden = true;
 		if (playerItem['J'] > 0){document.getElementById('buttonJack').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -371,7 +371,7 @@
 
 		document.getElementById('buttonKeyMaking').hidden = true;
 		if (playerItem['K']*playerItem['E']*playerItem['Y'] > 0){document.getElementById('buttonKeyMaking').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>
 	
@@ -389,7 +389,7 @@
 		document.getElementById('buttonMining').hidden = true;
 		if (playerItem['M']*playerItem['I']*playerItem['N']*playerItem['E'] > 0){document.getElementById('buttonMining').hidden = false;}
 		move('neutral');
-		drawMaze();
+		
 	}
 	</script>
 	
@@ -403,7 +403,7 @@
 		document.getElementById('buttonNameArea').hidden = true;
 		if (playerItem['N']*playerItem['A']*playerItem['M']*playerItem['E'] > 0){document.getElementById('buttonNameArea').hidden = false;}
 		
-		drawMaze();
+		move('neutral');
 	}
 	</script>
 	
@@ -430,7 +430,7 @@
 		document.getElementById('buttonOuterClear').hidden = true;
 		if (playerItem['O']*playerItem['U']*playerItem['T'] > 0){document.getElementById('buttonOuterClear').hidden = false;}
 		
-		drawMaze();
+		move('neutral');
 	}
 	</script>
 	
@@ -542,7 +542,7 @@
 		if (playerItem['P']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['A']*playerItem['L'] > 0){document.getElementById('buttonPortalCreate').hidden = false;}
 		
 		move('neutral');
-		drawMaze();
+		
 	}
 	</script>
 	
@@ -558,7 +558,7 @@
 			maze = mazeList[playerArea.x][playerArea.y]["map"];
 			
 		
-		drawMaze();
+		move('neutral');
 		}
 	</script>
 	
@@ -591,7 +591,7 @@
 		document.getElementById('buttonTeleport').hidden = true;
 		if (playerItem['T']*playerItem['L']*(playerItem['E']-1) > 0){document.getElementById('buttonTeleport').hidden = false;}
 		
-		drawMaze();
+		
 		bomb();outerClear();
 	}
 	</script>
@@ -613,7 +613,7 @@
 
 		document.getElementById('buttonVortex').hidden = true;
 		if (playerItem['V']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['E']*playerItem['X']){document.getElementById('buttonVortex').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>
 	
@@ -651,7 +651,7 @@
 		document.getElementById('buttonWarp').hidden = true;
 		if (playerItem['W'] > 0){document.getElementById('buttonWarp').hidden = false;}
 		
-		drawMaze();
+		move('neutral');
 
 	}
 	</script>
@@ -676,7 +676,7 @@
 
 		document.getElementById('buttonXray').hidden = true;
 		if (playerItem['X']*playerItem['R']*playerItem['A']*playerItem['Y'] > 0){document.getElementById('buttonXray').hidden = false;}
-		drawMaze();
+		move('neutral');
 	}
 	</script>	
 	
@@ -710,7 +710,7 @@
 		document.getElementById('buttonZeroBack').hidden = true;
 		if (playerItem['Z']*playerItem['E']*playerItem['R']*playerItem['O'] > 0){document.getElementById('buttonZeroBack').hidden = false;}
 		
-		drawMaze();
+		
 		bomb();outerClear();
 		
 		 
