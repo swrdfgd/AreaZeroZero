@@ -414,6 +414,7 @@
 			movable = true
 			document.getElementById('sidebar').innerHTML += 'You named this area ' + document.getElementById("areaNaming").value;
 			document.getElementById("tempText").remove();
+			move('neutral');
 		}
 	</script>
 	
@@ -933,7 +934,7 @@
 					}
 						mapBaru.push(newMazeRow);
 					}
-					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps}
+					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps, "explored": false}
 				}
 			}
 			if (mazeList[a] == undefined){return}
@@ -960,7 +961,7 @@
 			areaZeroZero.push(newMazeRow);
 		}
 		mazeList[0] = {};
-		mazeList[0][0] = {"map": areaZeroZero, "neighbor": 0, "warps": warps}
+		mazeList[0][0] = {"map": areaZeroZero, "neighbor": 0, "warps": warps, "explored": true}
         createNeighbor(0,0)
 	</script>
 	
@@ -1086,6 +1087,7 @@
 			if (numWarp == 1){document.getElementById('sidebar').innerHTML += '<br>You realize this place is very huge..';numWarp++}
 			newX = playerPosition.x;
 			newY = playerPosition.y;
+			mazeList[playerArea.x][playerArea.y]['explored'] = true;
 			
 			//Collect item
 			if ((newY > 0)&&(newY < maze[0].length - 1)){ if ((newX > 0)&&(newX < maze.length - 1)){
