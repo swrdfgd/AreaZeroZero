@@ -49,6 +49,10 @@
 		.maze-portal {
             background-color: #00FFFF;
         }
+		
+		.maze-altarSacrifice {
+            background-color: #D4AF37;
+        }
 
 		
 		#controls {
@@ -205,6 +209,58 @@
 	<script>
 	    mazeList = {}
 		mazePosType = ['wall','road']
+	</script>
+	
+	<script>
+	//Create Altar
+	function createAltar(){
+		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+			if (Object.keys(pilihanAreaXObjek).length == 0){return}
+			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] != undefined){
+				if (mazeList[pilihanAreaX][pilihanAreaY]['permanent'] == true){return}
+			}
+			if (mazeList[pilihanAreaX][pilihanAreaY]['explored'] == true){return}
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
+			var mapBaru = [];
+			var mazeSize = [7,7];
+			warps = mazeList[pilihanAreaX][pilihanAreaY]["warps"];
+			for(let i = 0; i < mazeSize[0]; i++){
+					newMazeRow = [];
+					for(let j = 0; j < mazeSize[1]; j++){
+						pilihanTipe = 'road'
+						if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
+						if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
+						if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
+						if ((j > 0)&&(j < mazeSize[1] - 1)){ if ((i > 0)&&(i < mazeSize[0] - 1)){
+						if (mazeList[pilihanAreaX][pilihanAreaY]["item"]!=undefined){
+							if (mazeList[pilihanAreaX][pilihanAreaY]["item"][i-1][j-1] != ''){mazeList[pilihanAreaX][pilihanAreaY]["item"][i-1][j-1] = ''};
+						}
+						}}
+						newMazeRow.push(pilihanTipe)
+					}
+					mapBaru.push(newMazeRow);
+			}
+			altarType = 2 + Math.ceil(Math.random()*3);
+			switch (altarType){
+				case 3:
+					mapBaru[2][3] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
+					break;
+				case 4:
+					mapBaru[2][2] = 'altarSacrifice'; mapBaru[2][4] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
+					break;
+				case 5:
+					mapBaru[2][2] = 'altarSacrifice'; mapBaru[2][4] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice'; mapBaru[3][3] = 'altarSacrifice'; 
+					break;
+			}
+			
+			mazeList[pilihanAreaX][pilihanAreaY]["map"] = mapBaru;
+			mazeList[pilihanAreaX][pilihanAreaY]["permanent"] = true;
+			mazeList[pilihanAreaX][pilihanAreaY]["name"] = "Altar of Mu";
+			mazeList[pilihanAreaX][pilihanAreaY]["type"] = "altar";
+		
+	}
 	</script>
 	
 	<script>
@@ -770,7 +826,7 @@
 	</script>
 	
 	<script>
-		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT']
+		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT','ALTAR']
 		function soundWhispering(){
 			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)];			
 		}
@@ -891,6 +947,9 @@
 					break;
 				case 'whisper':
 					soundWhispering();
+					break;
+				case 'createAltar':
+					createAltar();
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -1013,6 +1072,7 @@
             }
 			document.getElementById("namaArea").innerHTML = "AREA (" + playerArea.x + ", " + playerArea.y + ")";
 			if (mazeList[playerArea.x][playerArea.y]["name"] != undefined){document.getElementById("namaArea").innerHTML = mazeList[playerArea.x][playerArea.y]["name"];}
+			mazeList[playerArea.x][playerArea.y]['explored'] = true;
 			updateCollection();
         }
 		
@@ -1024,7 +1084,8 @@
 		movable = true;
 		whisper = false;
 		exitDoorExist = false;
-		whispererExist = false
+		whispererExist = false;
+		altarCreatable = false;
 		
 		function endLife(){
 			if (playerInfo.happiness < 1){
@@ -1087,7 +1148,7 @@
 			if (numWarp == 1){document.getElementById('sidebar').innerHTML += '<br>You realize this place is very huge..';numWarp++}
 			newX = playerPosition.x;
 			newY = playerPosition.y;
-			mazeList[playerArea.x][playerArea.y]['explored'] = true;
+			
 			
 			//Collect item
 			if ((newY > 0)&&(newY < maze[0].length - 1)){ if ((newX > 0)&&(newX < maze.length - 1)){
@@ -1206,6 +1267,14 @@
 			if (playerItem['W']!=undefined && playerItem['H']!=undefined && playerItem['I']!=undefined && playerItem['S']!=undefined && playerItem['P']!=undefined && playerItem['E']!=undefined && playerItem['R']!=undefined){
 				if (playerItem['W']*playerItem['H']*playerItem['I']*playerItem['S']*playerItem['P']*playerItem['E']*playerItem['R'] > 0){
 					whispererExist = true; summonWhisperer();
+				}
+			}
+			}
+			
+			if (!altarCreatable){
+			if (playerItem['A']!=undefined && playerItem['L']!=undefined && playerItem['T']!=undefined && playerItem['R']!=undefined){
+				if ((playerItem['A']-1)*playerItem['L']*playerItem['T']*playerItem['R'] > 0){
+					altarCreatable = true; eventList.push('createAltar');
 				}
 			}
 			}
