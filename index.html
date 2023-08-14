@@ -19,7 +19,7 @@
             grid-template-columns: repeat(7, 50px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
             grid-template-rows: repeat(7, 50px); /* Ubah angka 5 sesuai dengan jumlah baris grid */
         }
-
+		
         .maze-cell {
             width: 50px;
             height: 50px;
@@ -32,6 +32,19 @@
 
         .maze-wall {
             background-color: black;
+        }
+		
+		.maze-wallU {
+            background: linear-gradient(to top, red 0%, black 100%);
+        }
+		.maze-wallL {
+            background: linear-gradient(to left, blue 0%, black 100%);
+        }
+		.maze-wallR {
+            background: linear-gradient(to right, green 0%, black 100%);
+        }
+		.maze-wallD {
+            background: linear-gradient(to bottom, yellow 0%, black 100%);
         }
 		
 		.maze-warp {
@@ -133,11 +146,7 @@
 			
 		}
 		#sidebar2 {
-			width: 20%;
-			float: Left;
 			background-color: rgba(255, 255, 255, 0.7);
-			padding: 20px;
-			height: 50%;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 			margin: 0 auto;
 			font-size: 16px;
@@ -184,8 +193,33 @@
   		border: 1px solid #ccc;
   		border-top: none;
 		}
+		
+		#Skill {
+            display: grid;
+            grid-template-columns: repeat(3, 150px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+        }
+		
+		#sidebar2 {
+			display: grid;
+            grid-template-columns: repeat(9, 50px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+        }
 
+		/* Glowing text */
+		.glow {
+ 		 color: skyblue;
+ 		 text-align: center;
+ 		 animation: glow 1s ease-in-out infinite alternate;
+		}
 
+		@-webkit-keyframes glow {
+ 		 from {
+ 		   text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073, 0 0 20px #e60073, 0 0 25px #e60073, 0 0 30px #e60073, 0 0 35px #e60073;
+ 		 }
+  
+ 		 to {
+ 		   text-shadow: 0 0 10px #fff, 0 0 15px #ff4da6, 0 0 29px #ff4da6, 0 0 25px #ff4da6, 0 0 30px #ff4da6, 0 0 35px #ff4da6, 0 0 40px #ff4da6;
+ 		 }
+		}
 
 
     </style>
@@ -200,12 +234,20 @@
 	<div id="namaArea" class="teks-cantik"></div>
 	</div>
 	
+	<div class = "body2">
+	<div id = "message" style="text-align: center">
+	You wake up in this unknown place...<br>
+	You realize you are holding some explosive items and colorful things.<br>
+	The only thing you can remember is someone told you to collect the SOUND.
+	</div>
+	</div>
 	
 	<div class = "body2">
 	
 	<div class="tab">
 	<button class="tablinks" onclick="openTab(event, 'Move')">Move</button>
 	<button class="tablinks" onclick="openTab(event, 'Skill')">Skill</button>
+	<button class="tablinks" onclick="openTab(event, 'Item')">Item</button>
 	</div>
 	
 	</div>
@@ -225,41 +267,36 @@
     </div>
 	
 	<div id="Skill" class="tabcontent">
-		<div>
-		<button id="buttonColorize" class = "buttonSkill" onclick="colorize();" hidden >Colorize</button>
-		<button id="buttonJack" class = "buttonSkill" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
-		<button id="buttonWarp" class = "buttonSkill" onclick="warp();" hidden >Warp</button>
-        </div>
-		<div>
-		<button id="buttonAreaClear" class = "buttonSkill" onclick="areaClear();" hidden >Area Clear</button>
-		<button id="buttonBomb" class = "buttonSkill" onclick="bomb();" hidden >Bomb</button>
-        </div>
-		<div>
-		<button id="buttonEnd" class = "buttonSkill" onclick="endLife();" hidden >End</button>
-		<button id="buttonFastForward" class = "buttonSkill" onclick="fastForward();" hidden >Fast Forward >></button>
-		</div>
-		<div>
-		<button id="buttonKeyMaking" class = "buttonSkill" onclick="keyMaking();" hidden >Key-Making</button>
-		<button id="buttonMining" class = "buttonSkill" onclick="mining();" hidden >Mining</button>
-		<button id="buttonNameArea" class = "buttonSkill" onclick="namingArea();" hidden >Name Area</button>
-		</div>
-		<div>
-		<button id="buttonGeneratorBuild" class = "buttonSkill" onclick="generatorBuild();" hidden >Build Letter Generator Here</button>
-		<button id="buttonHomeBuild" class = "buttonSkill" onclick="homeBuild();" hidden >Build Home Here</button>
-		<button id="buttonOuterClear" class = "buttonSkill" onclick="outerClear();" hidden >Outer Clear</button>
-		</div>
-		<div>
-		<button id="buttonPortalCreate" class = "buttonSkill" onclick="portalCreate();" hidden >Portal Create</button>
-		<button id="buttonUsePortal" class = "buttonSkill" onclick="usePortal();" hidden >Use Portal</button>
-		<button id="buttonTeleport" class = "buttonSkill" onclick="teleport();" hidden >Teleport</button>
-		</div>
-		<div>
-		<button id="buttonVortex" class = "buttonSkill" onclick="vortex();" hidden >Vortex</button>
-		<button id="buttonXray" class = "buttonSkill" onclick="xray();" hidden >X Ray</button>
-		<button id="buttonZeroBack" class = "buttonSkill" onclick="zeroBack();" hidden >Back to Zero</button>
-		</div>	
+		<div id="buttonColorize" hidden ><button class = "buttonSkill" onclick="colorize();">Colorize</button></div>
+		<div id="buttonJack" hidden ><button class = "buttonSkill" onclick="jackOfAllTrades();">Jack of All Trades</button></div>
+		<div id="buttonWarp" hidden ><button class = "buttonSkill" onclick="warp();">Warp</button></div>
+		<div id="buttonAreaClear" hidden ><button class = "buttonSkill" onclick="areaClear();">Area Clear</button></div>
+		<div id="buttonBomb" hidden ><button class = "buttonSkill" onclick="bomb();">Bomb</button></div>
+		<div id="buttonEnd" hidden ><button class = "buttonSkill" onclick="endLife();">End</button></div>
+		<div id="buttonFastForward" hidden ><button class = "buttonSkill" onclick="fastForward();">Fast Forward >></button></div>
+		<div id="buttonKeyMaking" hidden ><button class = "buttonSkill" onclick="keyMaking();">Key-Making</button></div>
+		<div id="buttonMining" hidden ><button class = "buttonSkill" onclick="mining();">Mining</button></div>
+		<div id="buttonNameArea" hidden ><button class = "buttonSkill" onclick="namingArea();">Name Area</button></div>
+		<div id="buttonGeneratorBuild" hidden ><button class = "buttonSkill" onclick="generatorBuild();">Build Letter Generator Here</button></div>
+		<div id="buttonHomeBuild" hidden ><button class = "buttonSkill" onclick="homeBuild();">Build Home Here</button></div>
+		<div id="buttonOuterClear" hidden ><button class = "buttonSkill" onclick="outerClear();">Outer Clear</button></div>
+		<div id="buttonPortalCreate" hidden ><button class = "buttonSkill" onclick="portalCreate();">Portal Create</button></div>
+		<div id="buttonUsePortal" hidden ><button class = "buttonSkill" onclick="usePortal();">Use Portal</button></div>
+		<div id="buttonTeleport" hidden ><button class = "buttonSkill" onclick="teleport();">Teleport</button></div>
+		<div id="buttonVortex" hidden ><button class = "buttonSkill" onclick="vortex();">Vortex</button></div>
+		<div id="buttonXray" hidden ><button class = "buttonSkill" onclick="xray();">X Ray</button></div>
+		<div id="buttonZeroBack" hidden ><button class = "buttonSkill" onclick="zeroBack();">Back to Zero</button></div>
 	</div>
+	
+	<div id="Item" class="tabcontent">
+		<div id = "sidebar2">
+		</div>
+    </div>
+	
 	</div>
+	
+	
+    
 	
 	<script>
 	function openTab(evt, tabControl) {
@@ -272,7 +309,7 @@
 		for (i = 0; i < tablinks.length; i++) {
 			tablinks[i].className = tablinks[i].className.replace(" active", "");
 		}
-		document.getElementById(tabControl).style.display = "inline-block";
+		document.getElementById(tabControl).style.display = "grid";
 		evt.currentTarget.className += " active";
 }
 </script>
@@ -282,6 +319,14 @@
 	<script>
 	    mazeList = {}
 		mazePosType = ['wall','road']
+	</script>
+	
+	<script>
+	function giveMessage(m, see = false){
+		document.getElementById('sidebar').innerHTML += m;
+		if (see){document.getElementById('message').innerHTML = "See the Narrative Box =>)" ;return}
+		document.getElementById('message').innerHTML = m;
+	}
 	</script>
 	
 	<script>
@@ -390,6 +435,7 @@
 
 		document.getElementById('buttonColorize').hidden = true;
 		if (playerItem['C'] > 0){document.getElementById('buttonColorize').hidden = false;}
+		giveMessage(`<br><span style="background-color: #${mazeList[playerArea.x][playerArea.y]['color']}">Area's color is changed</span>`);
 		move('neutral');
 	}
 	</script>	
@@ -397,7 +443,7 @@
 	<script>
 	function fastForward(){
 		eventSpeed++
-		document.getElementById('sidebar').innerHTML += '<br>You feel that the time flow here is speeding up. All events happen faster...';
+		giveMessage('<br>You feel that the time flow here is speeding up. All events happen faster...');
 
 		playerItem['F']--;playerItem['A']--;playerItem['S']--;playerItem['T']--;
 
@@ -433,7 +479,7 @@
 	function homeBuild(){
 		mazeList[playerArea.x][playerArea.y]["map"][playerPosition.y][playerPosition.x] = 'home';
 		mazeList[playerArea.x][playerArea.y]["permanent"] = true;
-		document.getElementById('sidebar').innerHTML += '<br>You created a home at <a href="#" onclick="goHome('+`${playerArea.x},${playerArea.y},${playerPosition.y},${playerPosition.x}`+');">AREA (' + playerArea.x + ", " + playerArea.y + ")</a>";
+		giveMessage('<br>You created a home at <a href="#" onclick="goHome('+`${playerArea.x},${playerArea.y},${playerPosition.y},${playerPosition.x}`+');">AREA (' + playerArea.x + ", " + playerArea.y + ")</a>");
 
 		playerItem['H']--;playerItem['E']--;playerItem['O']--;playerItem['M']--;
 
@@ -447,7 +493,7 @@
 	function goHome(areaX,areaY,posY,posX){
 		if (movable == false){return}
 		if (mazeList[areaX][areaY]["map"][posY][posX] != 'home'){
-			document.getElementById('sidebar').innerHTML += '<br>This home has been destroyed.';
+			giveMessage('<br>This home has been destroyed.');
 			return;
 		};
 		playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
@@ -462,7 +508,7 @@
 			itemQuantity = 1 + Math.floor(1/(1-Math.random()));
 			if (playerItem[itemReceived] == undefined){playerItem[itemReceived] = itemQuantity}
 			else {playerItem[itemReceived]+=itemQuantity}
-			document.getElementById('sidebar').innerHTML += `<br>You found ${itemQuantity} ${itemReceived}s.`;
+			giveMessage(`<br>You found ${itemQuantity} ${itemReceived}s.`);
 			move('neutral');
 		}
 	</script>
@@ -524,7 +570,7 @@
 	
 	<script>
 	function namingArea(){
-		document.getElementById('sidebar').innerHTML += '<br><div id="tempText">Name this area:<br><input type="text" id="areaNaming" ><br><button onclick="nameThisArea()">Name</button></div>';
+		giveMessage('<br><div id="tempText">Name this area:<br><input type="text" id="areaNaming" ><br><button onclick="nameThisArea()">Name</button></div>',true);
 		movable = false;
 		
 		playerItem['N']--;playerItem['A']--;playerItem['M']--;playerItem['E']--;
@@ -541,7 +587,7 @@
 			mazeList[playerArea.x][playerArea.y]["name"] = document.getElementById("areaNaming").value;
 			mazeList[playerArea.x][playerArea.y]["permanent"] = true;
 			movable = true
-			document.getElementById('sidebar').innerHTML += 'You named this area ' + document.getElementById("areaNaming").value;
+			giveMessage('You named this area ' + document.getElementById("areaNaming").value);
 			document.getElementById("tempText").remove();
 			move('neutral');
 		}
@@ -599,7 +645,7 @@
 		}
 		function questioning(){
 			questionSelected = questionList[Math.floor(Math.random()*questionList.length)]
-			document.getElementById('sidebar').innerHTML += '<br>' + questionSelected[0];
+			giveMessage('<br>' + questionSelected[0]);
 			if (!playerAnsweredQuestion[questionSelected[1]]){playerAskingQuestion.push(questionSelected[1]);}
 		}
 	
@@ -632,7 +678,7 @@
 			}
 			
 			
-			document.getElementById('sidebar').innerHTML += '<br>' + jawaban;
+			giveMessage('<br>' + jawaban);
 			
 		}
 	</script>
@@ -681,7 +727,7 @@
 			[areaX, areaY, posX, posY] = portal[`${playerArea.x}-${playerArea.y}-${playerPosition.x}-${playerPosition.y}`];
 			if (movable == false){return}
 			if (mazeList[areaX][areaY]["map"][posY][posX] != 'portal'){
-					document.getElementById('sidebar').innerHTML += '<br>This portal has been broken.';
+					giveMessage('<br>This portal has been broken.');
 					return;
 			};
 			playerArea.x = areaX; playerArea.y = areaY; playerPosition.x = posX, playerPosition.y = posY;
@@ -694,7 +740,7 @@
 	
 	<script>
 	function teleport(){
-		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t teleport now.'; return}
+		if (movable==false){giveMessage('<br>You can\'t teleport now.'); return}
 		teleportDestination = [];
 		
 		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
@@ -749,7 +795,7 @@
 	
 	<script>
 	function warp(){
-		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t warp now.'; return}
+		if (movable == false){giveMessage('<br>You can\'t warp now.'); return}
 		currentPosition = [playerPosition.x, playerPosition.y];
 		warpDestination = [];
 		warpDestination =  [currentPosition[0], currentPosition[1]];
@@ -821,7 +867,7 @@
 			'You are feeling a little bit happy..',
 		]
 		function smile(){
-			document.getElementById('sidebar').innerHTML += '<br>' + smileList[Math.floor(Math.random()*smileList.length)];
+			giveMessage('<br>' + smileList[Math.floor(Math.random()*smileList.length)]);
 			playerInfo.happiness++;
 		}
 	
@@ -829,7 +875,7 @@
 	
 	<script>
 	function zeroBack(){
-		if (movable == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t teleport now.'; return}
+		if (movable == false){giveMessage('<br>You can\'t teleport now.'); return}
 
 		
 		[areaX, areaY, posX, posY] = [0,0,3,3];
@@ -901,7 +947,7 @@
 	<script>
 		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT','ALTAR']
 		function soundWhispering(){
-			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)];			
+			giveMessage('<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)]);			
 		}
 	</script>
 	
@@ -939,7 +985,7 @@
 				}
 			}
 			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = true;
-			document.getElementById('sidebar').innerHTML += '<br>You hear like someone is whispering something...<br>It tells you some numbers<br>' + pilihanAreaX + ' ' + pilihanAreaY;
+			giveMessage('<br>You hear like someone is whispering something...<br>It tells you some numbers<br>' + pilihanAreaX + ' ' + pilihanAreaY);
 			
 		}
 	</script>
@@ -954,12 +1000,12 @@
 			drawMaze();
 			if (playerAnsweredQuestion[tanyaPintuTerpilih] && playerIdentity["name"] != undefined){
 				if (playerIdentity["name"] == 'null'){
-					document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and want revenge.<br>SOMETHING ENDING';
+					giveMessage('<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and want revenge.<br>SOMETHING ENDING');
 				}
-				document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and go home.<br>You don\'t want to go back to that place again.<br>MEMORY ENDING';
+				giveMessage('<br>You found an exit door.<br>You escaped from this place.<br>You remember everything and go home.<br>You don\'t want to go back to that place again.<br>MEMORY ENDING');
 				return
 			}
-			document.getElementById('sidebar').innerHTML += '<br>You found an exit door.<br>You escaped from this place but you still have memory loss.<br>You are walking and then find a village.<br>You are starting a new life.<br>MEMORY LOSS ENDING';
+			giveMessage('<br>You found an exit door.<br>You escaped from this place but you still have memory loss.<br>You are walking and then find a village.<br>You are starting a new life.<br>MEMORY LOSS ENDING');
 		}
 	</script>
 	
@@ -999,7 +1045,7 @@
 				}
 			}
 			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = true;
-			document.getElementById('sidebar').innerHTML += '';
+			giveMessage('');
 			whispererPosition = {areaX:pilihanAreaX, areaY: pilihanAreaY, x:pilihanPosX, y:pilihanPosY};
 			
 		}
@@ -1118,7 +1164,10 @@
                     cell.classList.add('maze-'+maze[row][col]);
 					
 					if ((maze[row][col]).substring(0,4) == 'wall'){cell.classList.add('maze-wall');}
-					if ((maze[row][col]).substring(0,4) == 'wall' && maze[row][col].length == 5){cell.innerHTML = '<div style="color: white">' + (maze[row][col]).substring(4,5) + '</div>';}
+					if ((maze[row][col]).substring(0,4) == 'wall' && maze[row][col].length == 5){
+						cell.innerHTML = '<div style="color: white">' + (maze[row][col]).substring(4,5) + '</div>';
+						if (playerItem[(maze[row][col]).substring(4,5)]!=undefined){if (playerItem[(maze[row][col]).substring(4,5)] > 0){cell.innerHTML = '<div class="glow">' + (maze[row][col]).substring(4,5) + '</div>';}}
+					}
 					
 					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
 					if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
@@ -1162,9 +1211,10 @@
 		
 		function endLife(){
 			if (playerInfo.happiness < 1){
-			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.<br>COMMIT ENDING';
+			giveMessage('<br>You\'ve ended your own life. At least you are not suffering anymore.<br>COMMIT ENDING');
 			playerItem['E']--;playerItem['N']--;playerItem['D']--;
 			life = false;
+			movable = false;
 			}
 			else{
 				playerPosition.x = -2; playerPosition.y = -2;
@@ -1176,14 +1226,14 @@
 					}
 				}
 				drawMaze();
-				document.getElementById('sidebar').innerHTML += '<br>Someone helped you escape from this place.<br>You are now safe and happy.<br>HAPPY ENDING';		
+				giveMessage('<br>Someone helped you escape from this place.<br>You are now safe and happy.<br>HAPPY ENDING');		
 			}
 		}
 		
         function move(direction) {
 			if (movable == false){return}
-			if (life == false){document.getElementById('sidebar').innerHTML += '<br>You can\'t move anymore.';return}
-			if (firstStep == false && direction != 'neutral'){firstStep = true; document.getElementById('sidebar').innerHTML += '<br>Now, you are taking your first step.';}
+			if (life == false){giveMessage('<br>You can\'t move anymore.');return}
+			if (firstStep == false && direction != 'neutral'){firstStep = true; giveMessage('<br>Now, you are taking your first step.');}
             let newX = playerPosition.x;
             let newY = playerPosition.y;
 
@@ -1218,7 +1268,7 @@
 			if (newX == mazeSize[0] - 1){playerPosition.x = 1; playerArea.x = playerArea.x + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
 			if (newY == 0){playerPosition.y = mazeSize[1] - 2; playerArea.y = playerArea.y + 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
 			if (newY == mazeSize[1] - 1){playerPosition.y = 1; playerArea.y = playerArea.y - 1; maze = mazeList[playerArea.x][playerArea.y]["map"];createNeighbor(playerArea.x,playerArea.y);eventStart();numWarp++}
-			if (numWarp == 1){document.getElementById('sidebar').innerHTML += '<br>You realize this place is very huge..';numWarp++}
+			if (numWarp == 1){giveMessage('<br>You realize this place is very huge..');numWarp++}
 			newX = playerPosition.x;
 			newY = playerPosition.y;
 			
@@ -1232,9 +1282,9 @@
 					else {playerItem[''+mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1]]++}
 					mazeList[playerArea.x][playerArea.y]["item"][newY-1][newX-1] = '';
 					if (firstItem < 3){
-					if (firstItem == 2){document.getElementById('sidebar').innerHTML += '<br>There are so many of them here.';firstItem++}
-					if (firstItem == 1){document.getElementById('sidebar').innerHTML += '<br>The item you found might be useful.';firstItem++}
-					if (firstItem == 0){document.getElementById('sidebar').innerHTML += '<br>You found something.';firstItem++}
+					if (firstItem == 2){giveMessage('<br>There are so many of them here.');firstItem++}
+					if (firstItem == 1){giveMessage('<br>The item you found might be useful.');firstItem++}
+					if (firstItem == 0){giveMessage('<br>You found something.');firstItem++}
 					}
 					if (itemName == 'Q'){questioning();}
 					if (itemName == 'Y'){smile();}
@@ -1242,9 +1292,9 @@
 					
 				}
 			}
-			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..'; playerInfo.happiness--;}}
-			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; document.getElementById('sidebar').innerHTML += '<br>You are so lonely..'; playerInfo.happiness--;}}
-			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; document.getElementById('sidebar').innerHTML += '<br>You are depressed..'; playerInfo.happiness--;}}
+			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; giveMessage('<br>You are feeling sad..'); playerInfo.happiness--;}}
+			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; giveMessage('<br>You are so lonely..'); playerInfo.happiness--;}}
+			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; giveMessage('<br>You are depressed..'); playerInfo.happiness--;}}
 			
 			}}
 			if (playerItem['E']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
@@ -1363,7 +1413,7 @@
 						}
 					}
 					drawMaze();
-					document.getElementById('sidebar').innerHTML += '<br>You found the whisperer.<br>The whisperer killed you.<br>You are dead.<br>WHISPERER ENDING';
+					giveMessage('<br>You found the whisperer.<br>The whisperer killed you.<br>You are dead.<br>WHISPERER ENDING');
 					
 				}
 			}
@@ -1393,22 +1443,20 @@
         
     </script>
 
+
 <div id="sidebar">
+<b>Narrative Box</b><br>
 You wake up in this unknown place...<br>
 You realize you are holding some explosive items and colorful things.<br>
 The only thing you can remember is someone told you to collect the SOUND.
 </div>
 
-<div id="sidebar2">
-Your Collection 
-
-</div>
 <script>
 	function updateCollection(){
-		document.getElementById('sidebar2').innerHTML = "Your Collection<br>";
+		document.getElementById('sidebar2').innerHTML = '';
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
-			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
+			document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]] + '</div>';
 			}
 			
 		}
