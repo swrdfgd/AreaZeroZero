@@ -612,7 +612,7 @@
 		playerItem['V']--;playerItem['O']--;playerItem['R']--;playerItem['T']--;playerItem['E']--;playerItem['X']--;
 
 		document.getElementById('buttonVortex').hidden = true;
-		if (playerItem['V']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['E']*playerItem['X']){document.getElementById('buttonVortex').hidden = false;}
+		if (playerItem['V']*playerItem['O']*playerItem['R']*playerItem['T']*playerItem['E']*playerItem['X'] > 0){document.getElementById('buttonVortex').hidden = false;}
 		move('neutral');
 	}
 	</script>
@@ -1250,6 +1250,7 @@ Your Collection
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
 			document.getElementById('sidebar2').innerHTML += '<br>' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]];
 			}
+			
 		}
 	}
 	updateCollection();
