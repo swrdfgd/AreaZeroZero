@@ -692,6 +692,7 @@
 		]
 		function smile(){
 			document.getElementById('sidebar').innerHTML += '<br>' + smileList[Math.floor(Math.random()*smileList.length)];
+			playerInfo.happiness++;
 		}
 	
 	</script>
@@ -969,6 +970,7 @@
         const playerPosition = { x: Math.floor(mazeSize[0]/2), y: Math.floor(mazeSize[1]/2) };
         playerArea = { x: 0, y: 0};
 		playerItem = {B: 4, O: 4, M: 2, C:5};
+		playerInfo = {happiness: 0}
 		
 		
         function drawMaze() {
@@ -1024,9 +1026,23 @@
 		whispererExist = false
 		
 		function endLife(){
+			if (playerInfo.happiness < 1){
 			document.getElementById('sidebar').innerHTML += '<br>You\'ve ended your own life. At least you are not suffering anymore.<br>COMMIT ENDING';
 			playerItem['E']--;playerItem['N']--;playerItem['D']--;
 			life = false;
+			}
+			else{
+				playerPosition.x = -2; playerPosition.y = -2;
+				movable = false;
+					
+				for (i = 0; i < mazeSize[0] ; i++){
+					for (j = 0; j < mazeSize[1] ; j++){
+						maze[i][j] = 'wall';
+					}
+				}
+				drawMaze();
+				document.getElementById('sidebar').innerHTML += '<br>Someone helped you escape from this place.<br>You are now safe and happy.<br>HAPPY ENDING';		
+			}
 		}
 		
         function move(direction) {
@@ -1090,9 +1106,9 @@
 					
 				}
 			}
-			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..';}}
-			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; document.getElementById('sidebar').innerHTML += '<br>You are so lonely..';}}
-			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; document.getElementById('sidebar').innerHTML += '<br>You are depressed..';}}
+			if (playerItem['E']!=undefined){if (playerItem['E'] == 1 && playerEnd[0] == false){playerEnd[0] = true; document.getElementById('sidebar').innerHTML += '<br>You are feeling sad..'; playerInfo.happiness--;}}
+			if (playerItem['N']!=undefined){if (playerItem['N'] == 1 && playerEnd[1] == false){playerEnd[1] = true; document.getElementById('sidebar').innerHTML += '<br>You are so lonely..'; playerInfo.happiness--;}}
+			if (playerItem['D']!=undefined){if (playerItem['D'] == 1 && playerEnd[2] == false){playerEnd[2] = true; document.getElementById('sidebar').innerHTML += '<br>You are depressed..'; playerInfo.happiness--;}}
 			
 			}}
 			if (playerItem['E']!=undefined && playerItem['N']!=undefined && playerItem['D']!=undefined){
