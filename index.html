@@ -1456,7 +1456,7 @@ The only thing you can remember is someone told you to collect the SOUND.
 		document.getElementById('sidebar2').innerHTML = '';
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
-			document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' - ' + playerItem[Object.keys(playerItem)[item]] + '</div>';
+			document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';
 			}
 			
 		}
