@@ -55,7 +55,7 @@
         }
 
 		
-		#controls {
+		.tab {
             margin-top: 20px;
         }
 
@@ -146,7 +146,44 @@
 			font-family: Arial Black;
 		}
 
+		/* Style the tab */
+		.tab {
+  		overflow: hidden;
+  		border: 1px solid #ccc;
+  		background-color: #f1f1f1;
+		
+		}
+		
+		/* Style the buttons inside the tab */
+		.tab button {
+  		background-color: inherit;
+  		float: left;
+  		border: none;
+  		outline: none;
+  		cursor: pointer;
+  		padding: 14px 16px;
+  		transition: 0.3s;
+  		font-size: 17px;
+		color: black;
+		}
 
+		/* Change background color of buttons on hover */
+		.tab button:hover {
+  		background-color: #ddd;
+		}
+
+		/* Create an active/current tablink class */
+		.tab button.active {
+  		background-color: #ccc;
+		}
+
+		/* Style the tab content */
+		.tabcontent {
+  		display: none;
+  		padding: 6px 12px;
+  		border: 1px solid #ccc;
+  		border-top: none;
+		}
 
 
 
@@ -162,22 +199,42 @@
 	<div class = "body2">
 	<div id="namaArea" class="teks-cantik"></div>
 	</div>
+	
+	
 	<div class = "body2">
-    <div id="controls">
+	
+	<div class="tab">
+	<button class="tablinks" onclick="openTab(event, 'Move')">Move</button>
+	<button class="tablinks" onclick="openTab(event, 'Skill')">Skill</button>
+	</div>
+	
+	</div>
+	
+	<div class = "body2">
+    <div id="Move" class="tabcontent">
 		<div>
         <button id="buttonUp" onclick="move('up');">Up (W)</button>
+        </div>
+		<div>
+        <button id="buttonLeft" onclick="move('left');">Left (A)</button>
+        <button id="buttonRight" onclick="move('right');">Right (D)</button>
+        </div>
+		<div>
+        <button id="buttonRight" onclick="move('down');">Down (S)</button>
+		</div>
+    </div>
+	
+	<div id="Skill" class="tabcontent">
+		<div>
 		<button id="buttonColorize" class = "buttonSkill" onclick="colorize();" hidden >Colorize</button>
 		<button id="buttonJack" class = "buttonSkill" onclick="jackOfAllTrades();" hidden >Jack of All Trades</button>
 		<button id="buttonWarp" class = "buttonSkill" onclick="warp();" hidden >Warp</button>
         </div>
 		<div>
-        <button id="buttonLeft" onclick="move('left');">Left (A)</button>
-        <button id="buttonRight" onclick="move('right');">Right (D)</button>
 		<button id="buttonAreaClear" class = "buttonSkill" onclick="areaClear();" hidden >Area Clear</button>
 		<button id="buttonBomb" class = "buttonSkill" onclick="bomb();" hidden >Bomb</button>
         </div>
 		<div>
-        <button id="buttonRight" onclick="move('down');">Down (S)</button>
 		<button id="buttonEnd" class = "buttonSkill" onclick="endLife();" hidden >End</button>
 		<button id="buttonFastForward" class = "buttonSkill" onclick="fastForward();" hidden >Fast Forward >></button>
 		</div>
@@ -200,9 +257,25 @@
 		<button id="buttonVortex" class = "buttonSkill" onclick="vortex();" hidden >Vortex</button>
 		<button id="buttonXray" class = "buttonSkill" onclick="xray();" hidden >X Ray</button>
 		<button id="buttonZeroBack" class = "buttonSkill" onclick="zeroBack();" hidden >Back to Zero</button>
-		</div>
-    </div>
+		</div>	
 	</div>
+	</div>
+	
+	<script>
+	function openTab(evt, tabControl) {
+		var i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablinks");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active", "");
+		}
+		document.getElementById(tabControl).style.display = "inline-block";
+		evt.currentTarget.className += " active";
+}
+</script>
 </div>
 
 	
@@ -787,7 +860,7 @@
 				mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];
 			}
 			koordinatItem = [Math.ceil(Math.random()*5),Math.ceil(Math.random()*5)]
-			if (mazeList[pilihanAreaX][pilihanAreaY]["map"][koordinatItem[0]][koordinatItem[1]]=='wall'){return}
+			if (mazeList[pilihanAreaX][pilihanAreaY]["map"][koordinatItem[0]][koordinatItem[1]].substring(0,4)=='wall'){return}
 			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
 		}
 	</script>
