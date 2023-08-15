@@ -1426,6 +1426,9 @@
 						else{
 							mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1] = '';
 							mazeList[playerArea.x][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere;
+							if (personHere == 'whisperer'){
+								whispererPosition.x =  posisiAkhir[0]; whispererPosition.y =  posisiAkhir[1]; 
+							}
 						}
 					}
 				}
