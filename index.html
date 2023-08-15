@@ -243,6 +243,27 @@
  		   text-shadow: 0 0 10px #fff, 0 0 15px #ff4da6, 0 0 29px #ff4da6, 0 0 25px #ff4da6, 0 0 30px #ff4da6, 0 0 35px #ff4da6, 0 0 40px #ff4da6;
  		 }
 		}
+		
+		.tooltip {
+			position: relative;
+			display: inline-block;
+		}
+		.tooltip .tooltiptext {
+			display: none;
+			position: absolute;
+			background-color: #333;
+			color: #fff;
+			padding: 5px;
+			border-radius: 4px;
+			z-index: 1;
+			bottom: 100%; /* Tooltip appears above the container */
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		
+		.tooltip:hover .tooltiptext {
+			display: block;
+		}
 
 
     </style>
@@ -314,6 +335,7 @@
 		<div id="buttonVortex" hidden ><button class = "buttonSkill" onclick="vortex();">Vortex</button></div>
 		<div id="buttonXray" hidden ><button class = "buttonSkill" onclick="xray();">X Ray</button></div>
 		<div id="buttonZeroBack" hidden ><button class = "buttonSkill" onclick="zeroBack();">Back to Zero</button></div>
+		<div id="buttonZooiengHowl" hidden ><button class = "buttonSkill" onclick="zooiengHowl();">Zooieng Howl</button></div>
 	</div>
 	
 	<div id="Item" class="tabcontent">
@@ -452,6 +474,24 @@
 	</script>
 	
 	<script>
+		function zooiengHowl(){
+			if (mazeList[playerArea.x][playerArea.y]["item"] == undefined){mazeList[playerArea.x][playerArea.y]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (Math.random() < 1/2){
+					if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'wall' && mazeList[playerArea.x][playerArea.y]["map"][i][j].length == 5){
+							mazeList[playerArea.x][playerArea.y]["item"][i-1][j-1] = mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(4,5);
+						}
+					mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'road';
+				}
+			}
+			}
+			document.getElementById('buttonZooiengHowl').hidden = true;
+			move('neutral');
+		}
+	</script>
+	
+	<script>
 	function areaClear(){
 		for (let i = 1; i < mazeSize[0] - 1; i++){
 			for (let j = 1; j < mazeSize[1] - 1; j++){
@@ -575,6 +615,12 @@
 	<script>
 		function itemReceive(){
 			itemReceived = daftarItem[Math.floor(Math.random()*daftarItem.length)];
+			if (daftarItemInfo[itemReceived] != undefined){
+				if (daftarItemInfo[itemReceived].spawned != undefined){
+					itemReceive();
+					return
+				}
+			}
 			itemQuantity = 1 + Math.floor(1/(1-Math.random()));
 			if (playerItem[itemReceived] == undefined){playerItem[itemReceived] = itemQuantity}
 			else {playerItem[itemReceived]+=itemQuantity}
@@ -971,19 +1017,48 @@
 		}
 	</script>
 	
+	<script>
+		function readBook(book){
+			switch (book){
+				case 'ZOOIER':
+					playerSprite = 'playerZooier.png';
+					playerMutant = 'Zooier';
+					eventList.push('ZooiengHowlCharge');
+					break;
+			}
+		}
+	</script>
+	
+	<script>
+		function use(item){
+			eval(daftarItemInfo[item].action)
+			playerItem[item]--;
+			move('neutral')
+		}
+	</script>
 	
 	<script>
 		daftarItemInfo = {
 			"Cupcake": {sprite: "🧁"},
+			"Book of ZOOIER": {sprite: "📕", usable: true, action:"readBook('ZOOIER')", spawned: false},
 		}
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake"];
+		daftarItem = ["Cupcake","Book of ZOOIER"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
 		function spawnItem(){
+			pilihanItem = daftarItem[Math.floor(Math.random()*daftarItem.length)];
+			if (daftarItemInfo[pilihanItem] != undefined){
+				if (daftarItemInfo[pilihanItem].spawned != undefined){
+					if (daftarItemInfo[pilihanItem].spawned == true){
+						spawnItem();
+						return
+					}
+				}
+			}
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
 			if (Object.keys(pilihanAreaXObjek).length == 0){return}
@@ -994,7 +1069,12 @@
 			}
 			koordinatItem = [Math.ceil(Math.random()*5),Math.ceil(Math.random()*5)]
 			if (mazeList[pilihanAreaX][pilihanAreaY]["map"][koordinatItem[0]][koordinatItem[1]].substring(0,4)=='wall'){return}
-			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = daftarItem[Math.floor(Math.random()*daftarItem.length)];
+			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = pilihanItem;
+			if (daftarItemInfo[pilihanItem] != undefined){
+				if (daftarItemInfo[pilihanItem].spawned != undefined){
+					daftarItemInfo[pilihanItem].spawned = true;
+				}
+			}
 		}
 	</script>
 	<script>
@@ -1184,6 +1264,9 @@
 				case 'hungerDrop':
 					hungerDrop();
 					break;
+				case 'ZooiengHowlCharge':
+					document.getElementById('buttonZooiengHowl').hidden = false;
+					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
 			}
@@ -1264,7 +1347,7 @@
         playerArea = { x: 0, y: 0};
 		playerItem = {B: 4, O: 4, M: 2, C:5};
 		playerInfo = {happiness: 0}
-		
+		playerSprite = "player.png"
 		
         function drawMaze() {
 			
@@ -1301,7 +1384,7 @@
 							cell.style.backgroundColor = "#" + mazeList[playerArea.x][playerArea.y]["color"];
 					}
 					if (playerPosition.x === col && playerPosition.y === row) {
-                        cell.innerHTML = '<img src="player.png"/>'; // Representasi pemain
+                        cell.innerHTML = '<img src="'+playerSprite+'"/>'; // Representasi pemain
                     }
                     mazeContainer.appendChild(cell);
                 }
@@ -1571,10 +1654,13 @@ The only thing you can remember is someone told you to collect the SOUND.
 <script>
 	function updateCollection(){
 		document.getElementById('sidebar2').innerHTML = '';
-		pos = false
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
-				document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + itemtoSprite(Object.keys(playerItem)[item]) + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';	
+				itemAdded = '';
+				itemAdded += '<div class="tooltip"><div style="border-color: pink; border-style: solid;">' + itemtoSprite(Object.keys(playerItem)[item]) + ' ×' + playerItem[Object.keys(playerItem)[item]]+'</div>';
+				if (daftarItemInfo[Object.keys(playerItem)[item]] != undefined){if (daftarItemInfo[Object.keys(playerItem)[item]].usable != undefined){itemAdded += '<div class="tooltiptext">'+Object.keys(playerItem)[item]+'<br><button onclick="use(\''+Object.keys(playerItem)[item]+'\');">Use'+'</button></div>'}}
+				itemAdded += '</div>';	
+				document.getElementById('sidebar2').innerHTML += itemAdded
 			}
 			
 		}
