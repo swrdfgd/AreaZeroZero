@@ -1102,6 +1102,9 @@
 						if (mazeList[pilihanAreaX][pilihanAreaY]["item"]!=undefined){
 							if (mazeList[pilihanAreaX][pilihanAreaY]["item"][i-1][j-1] != ''){pilihanTipe = 'road'};
 						}
+						if (mazeList[pilihanAreaX][pilihanAreaY]["person"]!=undefined){
+							if (mazeList[pilihanAreaX][pilihanAreaY]["person"][i-1][j-1] != ''){pilihanTipe = 'road'};
+						}
 						}}
 						newMazeRow.push(pilihanTipe)
 					}
@@ -1112,9 +1115,22 @@
 	</script>
 	
 	<script>
-		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT','ALTAR']
+		whisperSkill = ['AREA','BOMB','FAST','GENE','HOME','KEY','MINE','NAME','OUT','PORTAL','TELE','VORTEX','XRAY','EXIT','ALTAR','ITEM']
 		function soundWhispering(){
-			giveMessage('<br>You hear like someone is whispering something...<br>' + whisperSkill[Math.floor(Math.random()*whisperSkill.length)]);			
+			pilihanWhisper = whisperSkill[Math.floor(Math.random()*whisperSkill.length)]
+			if (pilihanWhisper == 'ITEM'){
+				daftarItem = Object.keys(playerItem)
+				pilihanItem = daftarItem[Math.floor(Math.random()*daftarItem.length)];
+				if (playerItem[pilihanItem] < 1){
+					giveMessage('<br>You reminded yourself you have no ' + pilihanItem);
+				}
+				else if (playerItem[pilihanItem] == 1){
+					giveMessage('<br>You reminded yourself you have one ' + pilihanItem);
+				}
+				else {giveMessage('<br>You reminded yourself you have ' + playerItem[pilihanItem] + ' ' + pilihanItem + 's');}
+				return
+			}
+			giveMessage('<br>You hear like someone is whispering something...<br>' + pilihanWhisper);			
 		}
 	</script>
 	
@@ -1125,7 +1141,7 @@
 			if (Object.keys(pilihanAreaXObjek).length == 0){createExitDoor(); return}
 			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
 			pilihanAreaX = parseInt(pilihanAreaX);
-			pilihanAreaY = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaY);
 			pilihanAreaX = pilihanAreaX + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
 			pilihanAreaY = pilihanAreaY + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
 			
@@ -1177,13 +1193,46 @@
 	</script>
 	
 	<script>
+		function spawnRabbit(){
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+			if (Object.keys(pilihanAreaXObjek).length == 0){spawnRabbit(); return}
+			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			pilihanAreaX = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaY);
+			
+			if (mazeList[pilihanAreaX] == undefined){spawnRabbit(); return}
+			if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){spawnRabbit(); return}
+			
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){spawnRabbit(); return}
+			
+			
+			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			rabbitSummoned = false;
+			while (rabbitSummoned == false){
+				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
+				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
+				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
+					mazeList[pilihanAreaX][pilihanAreaY]["person"][pilihanPosY-1][pilihanPosX-1] = 'rabbit';
+					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = '';
+					rabbitSummoned = true;
+				}
+			}
+			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = false;
+			
+			
+		}
+	</script>
+	
+	<script>
 		function summonWhisperer(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
 			if (Object.keys(pilihanAreaXObjek).length == 0){summonWhisperer(); return}
 			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
 			pilihanAreaX = parseInt(pilihanAreaX);
-			pilihanAreaY = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaY);
 			pilihanAreaX = pilihanAreaX + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
 			pilihanAreaY = pilihanAreaY + ( (-1)**(Math.floor(Math.random()*2)) )*( Math.floor(1/(1-Math.random())) - 1);
 			
@@ -1212,7 +1261,7 @@
 				}
 			}
 			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = true;
-			giveMessage('');
+			giveMessage('...');
 			whispererPosition = {areaX:pilihanAreaX, areaY: pilihanAreaY, x:pilihanPosX, y:pilihanPosY};
 			
 		}
@@ -1243,7 +1292,7 @@
 	</script>
 	
 	<script>
-		eventList = ['mazeReconstruct','spawnItem','hungerDrop']
+		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit']
 		eventSpeed = 1;
 		function eventStart(){
 			for (let i = 0; i < eventSpeed; i++){
@@ -1266,6 +1315,9 @@
 					break;
 				case 'ZooiengHowlCharge':
 					document.getElementById('buttonZooiengHowl').hidden = false;
+					break;
+				case 'spawnRabbit':
+					spawnRabbit();
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -1340,6 +1392,29 @@
         createNeighbor(0,0)
 	</script>
 	
+		<script>
+			function personMove(){
+				while (Math.random() < 1/2){
+					posisiAwal = [Math.ceil(Math.random()*5),Math.ceil(Math.random()*5)]
+					if (mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1] != ''){
+						personHere = '' + mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1];
+						posisiAkhir = [0, 0]; posisiAkhir[0] = 0 + posisiAwal[0]; posisiAkhir[1] = 0 + posisiAwal[1];
+						perpindahan = [[0,1],[1,0],[0,-1],[-1,0]]
+						pilihanPerpindahan = perpindahan[Math.floor(Math.random()*perpindahan.length)];
+						posisiAkhir[0] = posisiAkhir[0] + pilihanPerpindahan[0]; posisiAkhir[1] = posisiAkhir[1] + pilihanPerpindahan[1];
+						if (maze[posisiAkhir[0]][posisiAkhir[1]].substring(0,4) == 'wall' || maze[posisiAkhir[0]][posisiAkhir[1]] == 'warp'){
+						}
+						else if (mazeList[playerArea.x][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){
+						}
+						else{
+							mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1] = '';
+							mazeList[playerArea.x][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere;
+						}
+					}
+				}
+			}
+		</script>
+	
 	    <script>
         maze = areaZeroZero
 
@@ -1348,6 +1423,10 @@
 		playerItem = {B: 4, O: 4, M: 2, C:5};
 		playerInfo = {happiness: 0}
 		playerSprite = "player.png"
+		personInfo = {
+			'rabbit': {sprite: '🐰'},
+			'whisperer': {sprite: '(0,0)'},
+		}
 		
         function drawMaze() {
 			
@@ -1376,8 +1455,10 @@
 					if (mazeList[playerArea.x][playerArea.y]["person"]!=undefined){
 							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] != ''){
 								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]
+								cell.innerHTML = personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].sprite;
 							};
-							if (cell.innerHTML == "whisperer"){cell.innerHTML = '(0,0)';cell.setAttribute("id","whispererPlace");}
+							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] == "whisperer"){cell.setAttribute("id","whispererPlace");}
+						
 					}
 					}}
 					if (mazeList[playerArea.x][playerArea.y]["color"]!=undefined && maze[row][col] == 'road'){
@@ -1619,7 +1700,8 @@
 			if (maze[playerPosition.y][playerPosition.x] == 'portal'){
 				document.getElementById('buttonUsePortal').hidden = false;
 			}
-		
+			
+			if (mazeList[playerArea.x][playerArea.y]["person"] != undefined){personMove();}
             drawMaze();
         }
 		
