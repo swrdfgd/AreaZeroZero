@@ -337,6 +337,36 @@
 	</script>
 	
 	<script>
+	function createRandomName(length){
+		hurufVokal = 'aiueoy'
+		hurufKonsonan = 'qwrtypsdfghjklzxcvbnm'
+		mode3 = ['vkv','kvv','vvk','kvk','vkk'];
+		mode4 = ['vkvk','vkvv','kvvk','vvkk','vvkv','kvkv','kvkk','vkkv'];
+		mode5 = ['vkvkv','vkvkk','vkvvk','kvvkv','kvvkk','vvkkv','vvkvk','vvkvv','kvkvv','kvkvk','kvkk','kvkkv','vkkvk','vkkvv'];
+		switch (length){
+			case 3:
+				mode = mode3;
+				break;
+			case 4:
+				mode = mode4;
+				break;
+			case 5:
+				mode = mode5;
+				break;
+		}
+		pilihanStruktur = mode[Math.floor(Math.random()*mode.length)];
+		hasil = ''
+		for (i = 0; i < pilihanStruktur.length; i++){
+			if (pilihanStruktur[i] == 'v'){tambahanHuruf = hurufVokal[Math.floor(Math.random()*hurufVokal.length)];}
+			if (pilihanStruktur[i] == 'k'){tambahanHuruf = hurufKonsonan[Math.floor(Math.random()*hurufKonsonan.length)];}
+			if (i == 0){tambahanHuruf = tambahanHuruf.toUpperCase();}
+			hasil += tambahanHuruf;
+		}
+		return hasil
+	}
+	</script>
+	
+	<script>
 	//Create Altar
 	function createAltar(){
 		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
@@ -382,7 +412,7 @@
 			
 			mazeList[pilihanAreaX][pilihanAreaY]["map"] = mapBaru;
 			mazeList[pilihanAreaX][pilihanAreaY]["permanent"] = true;
-			mazeList[pilihanAreaX][pilihanAreaY]["name"] = "Altar of Mu";
+			mazeList[pilihanAreaX][pilihanAreaY]["name"] = "Altar of " + createRandomName(altarType);
 			mazeList[pilihanAreaX][pilihanAreaY]["type"] = "altar";
 		
 	}
