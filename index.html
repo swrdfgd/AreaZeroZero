@@ -392,10 +392,14 @@
 	function createRandomName(length){
 		hurufVokal = 'aiueoy'
 		hurufKonsonan = 'qwrtypsdfghjklzxcvbnm'
+		mode2 = ['vk','kv','vv'];
 		mode3 = ['vkv','kvv','vvk','kvk','vkk'];
 		mode4 = ['vkvk','vkvv','kvvk','vvkk','vvkv','kvkv','kvkk','vkkv'];
 		mode5 = ['vkvkv','vkvkk','vkvvk','kvvkv','kvvkk','vvkkv','vvkvk','vvkvv','kvkvv','kvkvk','kvkk','kvkkv','vkkvk','vkkvv'];
 		switch (length){
+			case 2:
+				mode = mode2;
+				break;
 			case 3:
 				mode = mode3;
 				break;
@@ -449,8 +453,11 @@
 					}
 					mapBaru.push(newMazeRow);
 			}
-			altarType = 2 + Math.ceil(Math.random()*3);
+			altarType = 1 + Math.ceil(Math.random()*3);
 			switch (altarType){
+				case 2:
+					mapBaru[2][2] = 'altarSacrifice'; mapBaru[4][4];
+					break;
 				case 3:
 					mapBaru[2][3] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
 					break;
@@ -1717,13 +1724,13 @@
 		
 		// Tambahkan event listener untuk mendeteksi input tombol arah pada keyboard
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'ArrowUp' || event.key === 'w') {
+            if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
                 move('up');
-            } else if (event.key === 'ArrowDown' || event.key === 's') {
+            } else if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
                 move('down');
-            } else if (event.key === 'ArrowLeft' || event.key === 'a') {
+            } else if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
                 move('left');
-            } else if (event.key === 'ArrowRight' || event.key === 'd') {
+            } else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
                 move('right');
             }
         });
