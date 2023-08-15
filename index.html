@@ -380,14 +380,11 @@
 	</script>
 	
 	<script>
+		foodAvailable = ''
 		hunger = 100;
 		function eatCupcake(){
-			if (playerItem["Cupcake"] == undefined){giveMessage('<br> You don\'t have any cupcake');return}
-			if (playerItem["Cupcake"] < 1){giveMessage('<br> You don\'t have any Cupcake');return}
-			hunger = Math.min(100, hunger+70);
-			playerItem["Cupcake"]--;
-			updateHunger();
-			updateCollection();
+			if (foodAvailable == ''){giveMessage('<br> You don\'t have any food');return}
+			use(foodAvailable);
 		}
 	</script>
 	
@@ -468,6 +465,7 @@
 			mazeList[pilihanAreaX][pilihanAreaY]["map"] = mapBaru;
 			mazeList[pilihanAreaX][pilihanAreaY]["permanent"] = true;
 			mazeList[pilihanAreaX][pilihanAreaY]["name"] = "Altar of " + createRandomName(altarType);
+			if (whispererExist){mazeList[pilihanAreaX][pilihanAreaY]["name"] = "Altar of Mu"}
 			mazeList[pilihanAreaX][pilihanAreaY]["type"] = "altar";
 		
 	}
@@ -1018,7 +1016,7 @@
 	</script>
 	
 	<script>
-		function readBook(book){
+		function read(book){
 			switch (book){
 				case 'ZOOIER':
 					playerSprite = 'playerZooier.png';
@@ -1030,8 +1028,16 @@
 	</script>
 	
 	<script>
+		function eat(food){
+			hunger = Math.min(100, hunger + daftarItemInfo[food].hungerValue);
+			updateHunger();
+			updateCollection();
+		}
+	</script>
+	
+	<script>
 		function use(item){
-			eval(daftarItemInfo[item].action)
+			eval(daftarItemInfo[item].action);
 			playerItem[item]--;
 			move('neutral')
 		}
@@ -1039,18 +1045,19 @@
 	
 	<script>
 		daftarItemInfo = {
-			"Cupcake": {sprite: "🧁"},
-			"Book of ZOOIER": {sprite: "📕", usable: true, action:"readBook('ZOOIER')", spawned: false},
+			"Cupcake": {sprite: "🧁", usable: true, action:"eat('Cupcake')", hungerValue: 70},
+			"Book of ZOOIER": {sprite: "📕", usable: true, action:"read('ZOOIER')", spawned: false},
+			"Broccoli": {sprite: "🥦", usable: true, action:"eat('Broccoli')", hungerValue: 10},
 		}
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake","Book of ZOOIER"];
+		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
-		function spawnItem(){
-			pilihanItem = daftarItem[Math.floor(Math.random()*daftarItem.length)];
+		function spawnItem(pilihanItem = ''){
+			if (pilihanItem == ''){pilihanItem = daftarItem[Math.floor(Math.random()*daftarItem.length)];}
 			if (daftarItemInfo[pilihanItem] != undefined){
 				if (daftarItemInfo[pilihanItem].spawned != undefined){
 					if (daftarItemInfo[pilihanItem].spawned == true){
@@ -1292,7 +1299,7 @@
 	</script>
 	
 	<script>
-		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit']
+		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit','spawnBroccoli']
 		eventSpeed = 1;
 		function eventStart(){
 			for (let i = 0; i < eventSpeed; i++){
@@ -1318,6 +1325,9 @@
 					break;
 				case 'spawnRabbit':
 					spawnRabbit();
+					break;
+				case 'spawnBroccoli':
+					spawnItem('Broccoli');
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -1736,11 +1746,19 @@ The only thing you can remember is someone told you to collect the SOUND.
 <script>
 	function updateCollection(){
 		document.getElementById('sidebar2').innerHTML = '';
+		foodAvailable = '';
+		document.getElementById('buttonEat').innerHTML = "Eat"
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
 				itemAdded = '';
 				itemAdded += '<div class="tooltip"><div style="border-color: pink; border-style: solid;">' + itemtoSprite(Object.keys(playerItem)[item]) + ' ×' + playerItem[Object.keys(playerItem)[item]]+'</div>';
-				if (daftarItemInfo[Object.keys(playerItem)[item]] != undefined){if (daftarItemInfo[Object.keys(playerItem)[item]].usable != undefined){itemAdded += '<div class="tooltiptext">'+Object.keys(playerItem)[item]+'<br><button onclick="use(\''+Object.keys(playerItem)[item]+'\');">Use'+'</button></div>'}}
+				
+				if (daftarItemInfo[Object.keys(playerItem)[item]] != undefined){if (daftarItemInfo[Object.keys(playerItem)[item]].usable != undefined){
+					useWord = daftarItemInfo[Object.keys(playerItem)[item]].action.split('(')[0];
+					useWord = useWord[0].toUpperCase() + useWord.substring(1,useWord.length);
+					if (useWord == 'Eat' && foodAvailable == ''){foodAvailable = Object.keys(playerItem)[item]; document.getElementById('buttonEat').innerHTML = "Eat " + foodAvailable;}
+					itemAdded += '<div class="tooltiptext">'+Object.keys(playerItem)[item]+'<br><button onclick="use(\''+Object.keys(playerItem)[item]+'\');">'+useWord+'</button></div>'
+				}}
 				itemAdded += '</div>';	
 				document.getElementById('sidebar2').innerHTML += itemAdded
 			}
