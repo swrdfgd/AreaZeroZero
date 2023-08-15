@@ -93,6 +93,22 @@
             border-radius: 5px;
             cursor: pointer;
         }
+		
+		#buttonEat {
+            margin: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            border: none;
+            background-color: pink; /* Warna latar belakang */
+            color: black; /* Warna teks */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+		
+		#buttonEat:hover {
+            background-color: magenta; /* Warna latar belakang saat tombol dihover */
+			color: black;
+        }
 
         button:hover {
             background-color: #45a049; /* Warna latar belakang saat tombol dihover */
@@ -237,6 +253,11 @@
 	<div class="body2" id="mazePlace">
 	<div id="maze"></div>
 	</div>
+	
+	<div class="body2" style="align-items: start;">
+	<div>Hunger: <span id = "hunger"></span>/10  <button onclick="eatCupcake()" id="buttonEat">Eat Cupcake</button></div>
+	</div>
+	
 	<div class = "body2">
 	<div id="namaArea" class="teks-cantik"></div>
 	</div>
@@ -334,6 +355,18 @@
 		if (see){document.getElementById('message').innerHTML = "See the Narrative Box =>)" ;return}
 		document.getElementById('message').innerHTML = m;
 	}
+	</script>
+	
+	<script>
+		hunger = 100;
+		function eatCupcake(){
+			if (playerItem["Cupcake"] == undefined){giveMessage('<br> You don\'t have any cupcake');return}
+			if (playerItem["Cupcake"] < 1){giveMessage('<br> You don\'t have any Cupcake');return}
+			hunger = Math.min(100, hunger+70);
+			playerItem["Cupcake"]--;
+			updateHunger();
+			updateCollection();
+		}
 	</script>
 	
 	<script>
@@ -541,7 +574,7 @@
 	
 	<script>
 		function itemReceive(){
-			itemReceived = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
+			itemReceived = daftarItem[Math.floor(Math.random()*daftarItem.length)];
 			itemQuantity = 1 + Math.floor(1/(1-Math.random()));
 			if (playerItem[itemReceived] == undefined){playerItem[itemReceived] = itemQuantity}
 			else {playerItem[itemReceived]+=itemQuantity}
@@ -932,7 +965,24 @@
 	</script>
 	
 	<script>
+		function itemtoSprite(item){
+			if (daftarItemInfo[item] != undefined){return daftarItemInfo[item].sprite}
+			return item
+		}
+	</script>
+	
+	
+	<script>
+		daftarItemInfo = {
+			"Cupcake": {sprite: "🧁"},
+		}
+		
+	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
+		daftarItem = ["Cupcake"];
+		for (i = 0; i < daftarHuruf.length; i++){
+			daftarItem.push(daftarHuruf[i])
+		}
 		function spawnItem(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
@@ -944,7 +994,7 @@
 			}
 			koordinatItem = [Math.ceil(Math.random()*5),Math.ceil(Math.random()*5)]
 			if (mazeList[pilihanAreaX][pilihanAreaY]["map"][koordinatItem[0]][koordinatItem[1]].substring(0,4)=='wall'){return}
-			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)];
+			mazeList[pilihanAreaX][pilihanAreaY]["item"][koordinatItem[0]-1][koordinatItem[1]-1] = daftarItem[Math.floor(Math.random()*daftarItem.length)];
 		}
 	</script>
 	<script>
@@ -1089,7 +1139,31 @@
 	</script>
 	
 	<script>
-		eventList = ['mazeReconstruct','spawnItem']
+		function hungerDrop(){
+			hunger--;
+			if (hunger == 50){giveMessage('<br>You started feeling hungry');}
+			if (hunger == 25){giveMessage('<br>You feel so hungry');}
+			if (hunger == 12){giveMessage('<br>You are starving');}
+			if (hunger == 6){giveMessage('<br>You must eat immediately');}
+			if (hunger == 0){
+				playerPosition.x = -2; playerPosition.y = -2;
+				movable = false;
+				
+				for (i = 0; i < mazeSize[0] ; i++){
+					for (j = 0; j < mazeSize[1] ; j++){
+						maze[i][j] = 'wall';
+				}
+			}
+				drawMaze();
+				giveMessage('<br>You are dead by starvation<br>HUNGER ENDING');
+			}
+			
+			updateHunger();
+		}
+	</script>
+	
+	<script>
+		eventList = ['mazeReconstruct','spawnItem','hungerDrop']
 		eventSpeed = 1;
 		function eventStart(){
 			for (let i = 0; i < eventSpeed; i++){
@@ -1106,6 +1180,9 @@
 					break;
 				case 'createAltar':
 					createAltar();
+					break;
+				case 'hungerDrop':
+					hungerDrop();
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -1209,7 +1286,7 @@
 					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
 					if (mazeList[playerArea.x][playerArea.y]["item"]!=undefined){
 							if (mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1] != ''){
-								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1]
+								cell.innerHTML = itemtoSprite(mazeList[playerArea.x][playerArea.y]["item"][row-1][col-1])
 							};
 							if (cell.innerHTML == "exitDoor"){cell.innerHTML = '<span style="font-size: 45px;">🚪</span>';cell.setAttribute("id","doorPlace");}
 					}
@@ -1497,7 +1574,7 @@ The only thing you can remember is someone told you to collect the SOUND.
 		pos = false
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
-				document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';	
+				document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + itemtoSprite(Object.keys(playerItem)[item]) + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';	
 			}
 			
 		}
@@ -1505,6 +1582,13 @@ The only thing you can remember is someone told you to collect the SOUND.
 	updateCollection();
 	drawMaze();
 	move('neutral');
+</script>
+
+<script>
+	function updateHunger(){
+		document.getElementById("hunger").innerHTML = Math.floor(hunger/10);
+	}
+	updateHunger();
 </script>
 
 </body>
