@@ -128,23 +128,28 @@
 			position: absolute;
 		}
 		
-		#sidebar {
+		#narrativeBox {
 			width: 20%;
+			min-width: 250px;
 			float: right;
-			background-color: rgba(255, 255, 255, 0.7);
+			background-color: rgba(250, 250, 0, 0.1);
+			border-radius: 10px;
 			padding: 20px;
 			height: 50%;
 			overflow: scroll;
 			max-height: 500px;
-			background-color: #ffffff;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 			margin: 0 auto;
 			font-size: 16px;
 			line-height: 1.5;
 			margin-bottom: 15px;
 			font-family: Comic Sans MS;
-			
+			color: white;
+			text-shadow: 2px 2px 2px black;
+			z-index: 10;
+			position: relative;
 		}
+		
 		#sidebar2 {
 			background-color: rgba(255, 255, 255, 0.7);
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -196,12 +201,14 @@
 		
 		#Skill {
             display: grid;
-            grid-template-columns: repeat(3, 150px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+			justify-items: center;
+            grid-template-columns: repeat(2, 150px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
         }
 		
 		#sidebar2 {
 			display: grid;
-            grid-template-columns: repeat(9, 50px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+            grid-template-columns: repeat(6, 50px); /* Ubah angka 5 sesuai dengan jumlah kolom grid */
+			grid-gap: 3px;
         }
 
 		/* Glowing text */
@@ -227,7 +234,7 @@
 
 <body>
 <div id="main-content">
-	<div class="body2">
+	<div class="body2" id="mazePlace">
 	<div id="maze"></div>
 	</div>
 	<div class = "body2">
@@ -1444,19 +1451,23 @@
     </script>
 
 
+<div id="narrativeBox">
 <div id="sidebar">
 <b>Narrative Box</b><br>
 You wake up in this unknown place...<br>
 You realize you are holding some explosive items and colorful things.<br>
 The only thing you can remember is someone told you to collect the SOUND.
 </div>
+<button style="float: right; background-color: rgba(25,26,24,0.1); color: white;" id="showHide" onclick="document.getElementById('sidebar').hidden = !document.getElementById('sidebar').hidden; document.getElementById('showHide').innerHTML = ['Hide','Show'][document.getElementById('sidebar').hidden+0]">Hide</button>
+</div>
 
 <script>
 	function updateCollection(){
 		document.getElementById('sidebar2').innerHTML = '';
+		pos = false
 		for (item in Object.keys(playerItem)){
 			if (playerItem[Object.keys(playerItem)[item]] > 0 &&  Object.keys(playerItem)[item] != 'exitDoor'){
-			document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';
+				document.getElementById('sidebar2').innerHTML += '<div style="border-color: pink; border-style: solid;">' + Object.keys(playerItem)[item] + ' ×' + playerItem[Object.keys(playerItem)[item]] + '</div>';	
 			}
 			
 		}
