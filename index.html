@@ -888,7 +888,11 @@
 		document.getElementById('buttonTeleport').hidden = true;
 		if (playerItem['T']*playerItem['L']*(playerItem['E']-1) > 0){document.getElementById('buttonTeleport').hidden = false;}
 		
-		
+		if (playerItem["U"] == undefined){playerItem["U"] = 1;} else {playerItem["U"]++;}
+		if (playerItem["T"] == undefined){playerItem["T"] = 1;} else {playerItem["T"]++;}
+		playerItem["B"]+=2;
+		playerItem["O"]++;
+		playerItem["M"]++;
 		bomb();outerClear();
 	}
 	</script>
@@ -1008,7 +1012,11 @@
 		document.getElementById('buttonZeroBack').hidden = true;
 		if (playerItem['Z']*playerItem['E']*playerItem['R']*playerItem['O'] > 0){document.getElementById('buttonZeroBack').hidden = false;}
 		
-		
+		if (playerItem["U"] == undefined){playerItem["U"] = 1;} else {playerItem["U"]++;}
+		if (playerItem["T"] == undefined){playerItem["T"] = 1;} else {playerItem["T"]++;}
+		playerItem["B"]+=2;
+		playerItem["O"]++;
+		playerItem["M"]++;
 		bomb();outerClear();
 		
 		 
@@ -1043,6 +1051,15 @@
 	</script>
 	
 	<script>
+		function ride(transportation){
+			if (playerItem['T'] == undefined){playerItem['T'] == 1;} else {playerItem['T']++}
+			if (playerItem['E'] == undefined){playerItem['E'] == 2;} else {playerItem['E']+=2}
+			if (playerItem['L'] == undefined){playerItem['L'] == 1;} else {playerItem['L']++}
+			teleport();
+		}
+	</script>
+	
+	<script>
 		function use(item){
 			eval(daftarItemInfo[item].action);
 			playerItem[item]--;
@@ -1055,11 +1072,12 @@
 			"Cupcake": {sprite: "🧁", usable: true, action:"eat('Cupcake')", hungerValue: 70},
 			"Book of ZOOIER": {sprite: "📕", usable: true, action:"read('ZOOIER')", spawned: false},
 			"Broccoli": {sprite: "🥦", usable: true, action:"eat('Broccoli')", hungerValue: 10},
+			"Rocket": {sprite: "🚀", usable: true, action:"ride('Rocket')"},
 		}
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli"];
+		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1210,15 +1228,15 @@
 		function spawnRabbit(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
-			if (Object.keys(pilihanAreaXObjek).length == 0){spawnRabbit(); return}
+			if (Object.keys(pilihanAreaXObjek).length == 0){return}
 			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
 			pilihanAreaX = parseInt(pilihanAreaX);
 			pilihanAreaY = parseInt(pilihanAreaY);
 			
-			if (mazeList[pilihanAreaX] == undefined){spawnRabbit(); return}
-			if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){spawnRabbit(); return}
+			if (mazeList[pilihanAreaX] == undefined){return}
+			if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){return}
 			
-			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){spawnRabbit(); return}
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
 			
 			
 			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
