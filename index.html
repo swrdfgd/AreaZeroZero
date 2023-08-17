@@ -1452,6 +1452,18 @@
 				}
 			}
 		</script>
+		
+		<script>
+		function kill(personY,personX){
+			namaPerson = mazeList[playerArea.x][playerArea.y]["person"][personY][personX];
+			if ((personX + 1 -playerPosition.x)**2 + (personY + 1-playerPosition.y)**2 >= 4){
+				giveMessage('<br>The ' + namaPerson + ' is out of your range.');
+				return
+			}
+			mazeList[playerArea.x][playerArea.y]["person"][personY][personX] = '';
+			drawMaze();
+		}
+		</script>
 	
 	    <script>
         maze = areaZeroZero
@@ -1462,7 +1474,7 @@
 		playerInfo = {happiness: 0}
 		playerSprite = "player.png"
 		personInfo = {
-			'rabbit': {sprite: '🐰'},
+			'rabbit': {sprite: '🐰', action: ['kill']},
 			'whisperer': {sprite: '(0,0)'},
 		}
 		
@@ -1494,6 +1506,19 @@
 							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] != ''){
 								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]
 								cell.innerHTML = personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].sprite;
+								if (personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].action != undefined){
+									namaPerson = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1];
+									namaPersonCap = namaPerson[0].toUpperCase() + namaPerson.substring(1,namaPerson.length);
+									daftarAksi = personInfo[namaPerson].action;
+									isiSel = '<span class="tooltip">' + cell.innerHTML 
+									for (let i = 0; i < daftarAksi.length; i++){
+										useWord = daftarAksi[i];
+										useWord = useWord[0].toUpperCase() + useWord.substring(1,useWord.length);
+										isiSel +='<div class="tooltiptext">'+namaPersonCap+'<br><button onclick="'+daftarAksi[i]+'('+(row-1)+','+(col-1)+');">'+useWord+'</button></div>'
+									}
+									isiSel += '</span>';
+									cell.innerHTML = isiSel;
+								}
 							};
 							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] == "whisperer"){cell.setAttribute("id","whispererPlace");}
 						
