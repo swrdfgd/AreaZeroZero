@@ -1110,11 +1110,13 @@
 			"Wine": {sprite: "🍷", usable: true, action:"drink('Wine')", hungerValue: 5},
 			"Book of VINOLOGIST": {sprite: "📕", usable: true, action:"read('VINOLOGIST')", spawned: false},
 			"Candy": {sprite: "🍬", usable: true, action:"eat('Candy')", hungerValue: 15},
+			"Maple Leaf": {sprite: "🍁", spawned: false},
+			"Pistol": {sprite: "🔫", spawned: false},
 		}
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy"];
+		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1281,19 +1283,17 @@
 			
 			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
 			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
-			personSummoned = false;
-			while (personSummoned == false){
+		
 				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
 				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
 				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
 					mazeList[pilihanAreaX][pilihanAreaY]["person"][pilihanPosY-1][pilihanPosX-1] = person;
 					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = '';
-					personSummoned = true;
+					if (personInfo[person].spawned != undefined){
+						personInfo[person].spawned = true;
+					}
 				}
-				if (personInfo[person].spawned != undefined){
-					personInfo[person].spawned = true;
-				}
-			}
+				
 			
 			
 		}
@@ -1316,16 +1316,14 @@
 			
 			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
 			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
-			rabbitSummoned = false;
-			while (rabbitSummoned == false){
+			
 				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
 				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
 				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
 					mazeList[pilihanAreaX][pilihanAreaY]["person"][pilihanPosY-1][pilihanPosX-1] = 'rabbit';
 					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = '';
-					rabbitSummoned = true;
 				}
-			}
+			
 			
 			
 		}
@@ -1439,6 +1437,30 @@
 			
 		}
 	</script>
+	
+	<script>
+		function mapRefine(mapBaru, posX, posY){
+			maksDist = Math.max(Math.abs(posX), Math.abs(posY));
+			if (maksDist == 2){
+				dirCollection = [];
+				if (posX == 2){dirCollection.push('R');}
+				if (posX == -2){dirCollection.push('L');}
+				if (posY == 2){dirCollection.push('U');}
+				if (posY == -2){dirCollection.push('D');}
+				for (let i = 1; i < mazeSize[0] - 1 ; i++){
+					for (let j = 1; j < mazeSize[1] - 1; j++){
+						if (mapBaru[i][j].substring(0,4) == 'wall'){
+							pilihanDir = dirCollection[Math.floor(Math.random()*dirCollection.length)];
+							mapBaru[i][j] = 'wall' + pilihanDir;
+						}
+					}
+				}
+			}
+			
+			return mapBaru
+		}
+	</script>
+	
 	<script>
 		function createNeighbor(a,b){
 			if (mazeList[a] == undefined){}
@@ -1474,6 +1496,7 @@
 					}
 						mapBaru.push(newMazeRow);
 					}
+					mapBaru = mapRefine(mapBaru, a2, b2);
 					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps, "explored": false}
 				}
 			}
@@ -1515,7 +1538,18 @@
 						perpindahan = [[0,1],[1,0],[0,-1],[-1,0]]
 						pilihanPerpindahan = perpindahan[Math.floor(Math.random()*perpindahan.length)];
 						posisiAkhir[0] = posisiAkhir[0] + pilihanPerpindahan[0]; posisiAkhir[1] = posisiAkhir[1] + pilihanPerpindahan[1];
-						if (maze[posisiAkhir[0]][posisiAkhir[1]].substring(0,4) == 'wall' || maze[posisiAkhir[0]][posisiAkhir[1]] == 'warp'){
+						if (maze[posisiAkhir[0]][posisiAkhir[1]].substring(0,4) == 'wall'){
+						}
+						else if (maze[posisiAkhir[0]][posisiAkhir[1]] == 'warp'){
+							if (posisiAkhir[1] == 0){posisiAkhir[1] = mazeSize[0] - 2; if (mazeList[playerArea.x - 1][playerArea.y]["person"] == undefined){mazeList[playerArea.x - 1][playerArea.y]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];} else if (mazeList[playerArea.x - 1][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){return}; mazeList[playerArea.x - 1][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere; areaBaru = [playerArea.x - 1,playerArea.y];}
+							if (posisiAkhir[1] == mazeSize[0] - 1){posisiAkhir[1] = 1; if (mazeList[playerArea.x + 1][playerArea.y]["person"] == undefined){mazeList[playerArea.x + 1][playerArea.y]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];} else if (mazeList[playerArea.x + 1][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){return}; mazeList[playerArea.x + 1][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere; areaBaru = [playerArea.x + 1,playerArea.y];}
+							if (posisiAkhir[0] == 0){posisiAkhir[0] = mazeSize[1] - 2; if (mazeList[playerArea.x][playerArea.y + 1]["person"] == undefined){mazeList[playerArea.x][playerArea.y + 1]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];} else if (mazeList[playerArea.x][playerArea.y + 1]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){return}; mazeList[playerArea.x][playerArea.y + 1]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere; areaBaru = [playerArea.x,playerArea.y+1];}
+							if (posisiAkhir[0] == mazeSize[1] - 1){posisiAkhir[0] = 1; if (mazeList[playerArea.x][playerArea.y - 1]["person"] == undefined){mazeList[playerArea.x][playerArea.y - 1]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];} else if (mazeList[playerArea.x][playerArea.y - 1]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){return}; mazeList[playerArea.x][playerArea.y - 1]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere; areaBaru = [playerArea.x,playerArea.y-1];}
+							if (personHere == 'whisperer'){
+								whispererPosition.x =  posisiAkhir[1]; whispererPosition.y =  posisiAkhir[0]; 
+								whispererPosition.areaX = areaBaru[0]; whispererPosition.areaY = areaBaru[1];
+							}
+							mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1] = '';
 						}
 						else if (mazeList[playerArea.x][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] != ''){
 						}
@@ -1523,7 +1557,7 @@
 							mazeList[playerArea.x][playerArea.y]["person"][posisiAwal[0]-1][posisiAwal[1]-1] = '';
 							mazeList[playerArea.x][playerArea.y]["person"][posisiAkhir[0]-1][posisiAkhir[1]-1] = personHere;
 							if (personHere == 'whisperer'){
-								whispererPosition.x =  posisiAkhir[0]; whispererPosition.y =  posisiAkhir[1]; 
+								whispererPosition.x =  posisiAkhir[1]; whispererPosition.y =  posisiAkhir[0]; 
 							}
 						}
 					}
@@ -1557,6 +1591,18 @@
 				return
 			}
 			mazeList[playerArea.x][playerArea.y]["person"][personY][personX] = '';
+			drawMaze();
+		}
+		</script>
+		
+		<script>
+		function shoot(personY,personX){
+			namaPerson = mazeList[playerArea.x][playerArea.y]["person"][personY][personX];
+			
+			if (namaPerson == 'whisperer'){giveMessage('<br>You have killed the Whisperer');}
+			
+			mazeList[playerArea.x][playerArea.y]["person"][personY][personX] = '';
+			
 			drawMaze();
 		}
 		</script>
@@ -1599,21 +1645,37 @@
 							};
 							if (cell.innerHTML == "exitDoor"){cell.innerHTML = '<span style="font-size: 45px;">🚪</span>';cell.setAttribute("id","doorPlace");}
 					}
+					
+				
 					if (mazeList[playerArea.x][playerArea.y]["person"]!=undefined){
 							if (mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1] != ''){
 								cell.innerHTML = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]
 								cell.innerHTML = personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].sprite;
+								daftarAksi = [];
+								namaPerson = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1];
+								namaPersonCap = namaPerson[0].toUpperCase() + namaPerson.substring(1,namaPerson.length);
+								
 								if (personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].action != undefined){
-									namaPerson = mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1];
-									namaPersonCap = namaPerson[0].toUpperCase() + namaPerson.substring(1,namaPerson.length);
-									daftarAksi = personInfo[namaPerson].action;
-									isiSel = '<span class="tooltip">' + cell.innerHTML 
+									daftarAksi = (''+ personInfo[namaPerson].action.join(',').toString()).split(',');
+								}
+								
+								if (playerItem["Pistol"] != undefined){
+									if (playerItem["Pistol"] > 0){
+										daftarAksi.push('shoot');
+									}
+								}
+								
+								if (daftarAksi.length > 0){
+									if (personInfo[mazeList[playerArea.x][playerArea.y]["person"][row-1][col-1]].action != undefined || playerItem["Pistol"] != undefined)
+					
+									isiSel = '<span class="tooltip">' + cell.innerHTML  + '<div class="tooltiptext">'+namaPersonCap+'<br>'
 									for (let i = 0; i < daftarAksi.length; i++){
 										useWord = daftarAksi[i];
 										useWord = useWord[0].toUpperCase() + useWord.substring(1,useWord.length);
-										isiSel +='<div class="tooltiptext">'+namaPersonCap+'<br><button onclick="'+daftarAksi[i]+'('+(row-1)+','+(col-1)+');">'+useWord+'</button></div>'
+										isiSel +='<button onclick="'+daftarAksi[i]+'('+(row-1)+','+(col-1)+');">'+useWord+'</button>';
 									}
-									isiSel += '</span>';
+									
+									isiSel += '</div></span>';
 									cell.innerHTML = isiSel;
 								}
 							};
