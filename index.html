@@ -336,6 +336,7 @@
 		<div id="buttonXray" hidden ><button class = "buttonSkill" onclick="xray();">X Ray</button></div>
 		<div id="buttonZeroBack" hidden ><button class = "buttonSkill" onclick="zeroBack();">Back to Zero</button></div>
 		<div id="buttonZooiengHowl" hidden ><button class = "buttonSkill" onclick="zooiengHowl();">Zooieng Howl</button></div>
+		<div id="buttonMakeWine" hidden ><button class = "buttonSkill" onclick="makeWine();">Make Wine</button></div>
 	</div>
 	
 	<div id="Item" class="tabcontent">
@@ -776,7 +777,10 @@
 		playerIdentity = {}
 		function answerQuestion(){
 			if (playerAskingQuestion.length == 0){return}
-			if (playerIdentity["name"] == undefined){playerIdentity["name"] = identityNames[Math.floor(Math.random()*identityNames.length)];}
+			if (playerIdentity["name"] == undefined){
+				playerIdentity["name"] = identityNames[Math.floor(Math.random()*identityNames.length)];
+				if (playerIdentity["name"] == 'null'){playerSprite = '(0,0)';};
+			}
 			jawabanPlayer = identityList[playerIdentity["name"]];
 			if (playerAskingQuestion.length == 0){return}
 			pilihanPertanyaan = playerAskingQuestion[Math.floor(Math.random()*playerAskingQuestion.length)]
@@ -861,7 +865,7 @@
 	
 	<script>
 	function teleport(){
-		if (movable==false){giveMessage('<br>You can\'t teleport now.'); return}
+		if (movable==false){giveMessage('<br>You can\'t go now.'); return}
 		teleportDestination = [];
 		
 		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
@@ -1024,6 +1028,24 @@
 	</script>
 	
 	<script>
+	function makeWine(){
+		if (movable == false){giveMessage('<br>You can\'t make wine now.'); return}
+		
+		if (playerItem["Wine"] == undefined){playerItem["Wine"] = 0;}
+		playerItem["Wine"]++;
+		
+		playerItem['W']--;playerItem['I']--;playerItem['N']--;playerItem['E']--;
+		
+		document.getElementById('buttonMakeWine').hidden = true;
+		if (playerItem['W']*playerItem['I']*playerItem['N']*playerItem['E'] > 0){document.getElementById('buttonMakeWine').hidden = false;}
+		
+		move('neutral');
+		
+		 
+	}
+	</script>
+	
+	<script>
 		function itemtoSprite(item){
 			if (daftarItemInfo[item] != undefined){return daftarItemInfo[item].sprite}
 			return item
@@ -1031,12 +1053,16 @@
 	</script>
 	
 	<script>
+		makeWineEnable = false;
 		function read(book){
 			switch (book){
 				case 'ZOOIER':
 					playerSprite = 'playerZooier.png';
 					playerMutant = 'Zooier';
 					eventList.push('ZooiengHowlCharge');
+					break;
+				case 'VINOLOGIST':
+					makeWineEnable = true;
 					break;
 			}
 		}
@@ -1051,10 +1077,18 @@
 	</script>
 	
 	<script>
+		function drink(beverage){
+			hunger = Math.min(100, hunger + daftarItemInfo[beverage].hungerValue);
+			updateHunger();
+			updateCollection();
+		}
+	</script>
+	
+	<script>
 		function ride(transportation){
-			if (playerItem['T'] == undefined){playerItem['T'] == 1;} else {playerItem['T']++}
-			if (playerItem['E'] == undefined){playerItem['E'] == 2;} else {playerItem['E']+=2}
-			if (playerItem['L'] == undefined){playerItem['L'] == 1;} else {playerItem['L']++}
+			if (playerItem['T'] == undefined){playerItem['T'] = 1;} else {playerItem['T']++}
+			if (playerItem['E'] == undefined){playerItem['E'] = 2;} else {playerItem['E']+=2}
+			if (playerItem['L'] == undefined){playerItem['L'] = 1;} else {playerItem['L']++}
 			teleport();
 		}
 	</script>
@@ -1073,11 +1107,14 @@
 			"Book of ZOOIER": {sprite: "📕", usable: true, action:"read('ZOOIER')", spawned: false},
 			"Broccoli": {sprite: "🥦", usable: true, action:"eat('Broccoli')", hungerValue: 10},
 			"Rocket": {sprite: "🚀", usable: true, action:"ride('Rocket')"},
+			"Wine": {sprite: "🍷", usable: true, action:"drink('Wine')", hungerValue: 5},
+			"Book of VINOLOGIST": {sprite: "📕", usable: true, action:"read('VINOLOGIST')", spawned: false},
+			"Candy": {sprite: "🍬", usable: true, action:"eat('Candy')", hungerValue: 15},
 		}
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket"];
+		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1225,6 +1262,44 @@
 	</script>
 	
 	<script>
+		function spawnPerson(person){
+			if (personInfo[person].spawned != undefined){
+				if (personInfo[person].spawned == true){return}
+			}
+			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			pilihanAreaXObjek = mazeList[pilihanAreaX];
+			if (Object.keys(pilihanAreaXObjek).length == 0){return}
+			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			pilihanAreaX = parseInt(pilihanAreaX);
+			pilihanAreaY = parseInt(pilihanAreaY);
+			
+			if (mazeList[pilihanAreaX] == undefined){return}
+			if (mazeList[pilihanAreaX][pilihanAreaY] == undefined){return}
+			
+			if ((playerArea.x == pilihanAreaX)&&(playerArea.y == pilihanAreaY)){return}
+			
+			
+			if (mazeList[pilihanAreaX][pilihanAreaY]["person"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["person"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			if (mazeList[pilihanAreaX][pilihanAreaY]["item"] == undefined){mazeList[pilihanAreaX][pilihanAreaY]["item"] = [['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']];}
+			personSummoned = false;
+			while (personSummoned == false){
+				pilihanPosY = Math.ceil(Math.random()*(mazeSize[0]-2))
+				pilihanPosX = Math.ceil(Math.random()*(mazeSize[1]-2))
+				if (mazeList[pilihanAreaX][pilihanAreaY]["map"][pilihanPosY][pilihanPosX] == 'road'){
+					mazeList[pilihanAreaX][pilihanAreaY]["person"][pilihanPosY-1][pilihanPosX-1] = person;
+					mazeList[pilihanAreaX][pilihanAreaY]["item"][pilihanPosY-1][pilihanPosX-1] = '';
+					personSummoned = true;
+				}
+				if (personInfo[person].spawned != undefined){
+					personInfo[person].spawned = true;
+				}
+			}
+			
+			
+		}
+	</script>
+	
+	<script>
 		function spawnRabbit(){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
@@ -1251,7 +1326,6 @@
 					rabbitSummoned = true;
 				}
 			}
-			mazeList[pilihanAreaX][pilihanAreaY]['permanent'] = false;
 			
 			
 		}
@@ -1324,7 +1398,7 @@
 	</script>
 	
 	<script>
-		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit','spawnBroccoli']
+		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit','spawnBroccoli','spawnPerson']
 		eventSpeed = 1;
 		function eventStart(){
 			for (let i = 0; i < eventSpeed; i++){
@@ -1353,6 +1427,10 @@
 					break;
 				case 'spawnBroccoli':
 					spawnItem('Broccoli');
+					break;
+				case 'spawnPerson':
+					daftarPerson = ['Moon']
+					spawnPerson(daftarPerson[Math.floor(Math.random()*daftarPerson.length)]);
 					break;
 			}
 			if (pilihanEvent.substring(0,14) == 'generateLetter'){eval(pilihanEvent)}
@@ -1454,6 +1532,24 @@
 		</script>
 		
 		<script>
+		function talk(personY,personX){
+			namaPerson = mazeList[playerArea.x][playerArea.y]["person"][personY][personX];
+			if ((personX + 1 -playerPosition.x)**2 + (personY + 1-playerPosition.y)**2 >= 9){
+				giveMessage('<br>The person is too far.');
+				return
+			}
+			switch (namaPerson){
+				case 'Moon':
+				if (whispererExist){giveMessage('<br>🌛 Moon: I feel the presence of something dangerous around here.')}
+				else{giveMessage('<br>🌛 Moon: Hello, I am Moon.');}
+				break;
+			}
+			
+			drawMaze();
+		}
+		</script>
+		
+		<script>
 		function kill(personY,personX){
 			namaPerson = mazeList[playerArea.x][playerArea.y]["person"][personY][personX];
 			if ((personX + 1 -playerPosition.x)**2 + (personY + 1-playerPosition.y)**2 >= 4){
@@ -1476,6 +1572,7 @@
 		personInfo = {
 			'rabbit': {sprite: '🐰', action: ['kill']},
 			'whisperer': {sprite: '(0,0)'},
+			'Moon': {sprite: '<span style="font-size: 30px;">🌛</span>', action: ['talk'], type: 'person', spawned: false},
 		}
 		
         function drawMaze() {
@@ -1528,7 +1625,10 @@
 							cell.style.backgroundColor = "#" + mazeList[playerArea.x][playerArea.y]["color"];
 					}
 					if (playerPosition.x === col && playerPosition.y === row) {
+						if (playerSprite != '(0,0)'){
                         cell.innerHTML = '<img src="'+playerSprite+'"/>'; // Representasi pemain
+						}
+						else {cell.innerHTML = '(0,0)';}
                     }
                     mazeContainer.appendChild(cell);
                 }
@@ -1709,6 +1809,10 @@
 			if (playerItem['Z']!=undefined && playerItem['E']!=undefined && playerItem['R']!=undefined && playerItem['O']!=undefined){
 				document.getElementById('buttonZeroBack').hidden = true;
 				if (playerItem['Z']*playerItem['E']*playerItem['R']*playerItem['O'] > 0){document.getElementById('buttonZeroBack').hidden = false;}
+			}
+			if (playerItem['W']!=undefined && playerItem['I']!=undefined && playerItem['N']!=undefined && playerItem['E']!=undefined){
+				document.getElementById('buttonMakeWine').hidden = true;
+				if (playerItem['W']*playerItem['I']*playerItem['N']*playerItem['E'] > 0 && makeWineEnable == true){document.getElementById('buttonMakeWine').hidden = false;}
 			}
 			
 			if (!whisper){
