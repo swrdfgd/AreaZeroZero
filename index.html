@@ -422,6 +422,7 @@
 		mode4 = ['vkvk','vkvv','kvvk','vvkk','vvkv','kvkv','kvkk','vkkv'];
 		mode5 = ['vkvkv','vkvkk','vkvvk','kvvkv','kvvkk','vvkkv','vvkvk','vvkvv','kvkvv','kvkvk','kvkkv','kvkkv','vkkvk','vkkvv'];
 		mode6 = ['vkvkvv','vkvkvk','vkvkkv','vkvvkv','vkvvkk','kvvkvv','kvvkvk','kvvkkv','vvkkvv','vvkkvk','vvkvkv','vvkvkk','vvkvvk','kvkvvk','kvkvkv','kvkvkk','kvkkvv','kvkkvk','kvkkvv','kvkkvk','vkkvkv','vkkvkk','vkkvvk'];
+		mode7 = ['vkvkvvk','vkvkvkv','vkvkvkk','vkvkkvv','vkvkkvk','vkvvkvv','vkvvkvk','vkvvkkv','kvvkvvk','kvvkvkv','kvvkvkk','kvvkkvv','kvvkkvk','vvkkvvk','vvkkvkv','vvkkvkk','vvkvkvv','vvkvkvk','vvkvkkv','vvkvvkv','vvkvvkk','kvkvvkv','kvkvvkk','kvkvkvv','kvkvkvk','kvkvkkv','kvkkvvk','kvkkvkv','kvkkvkk','kvkkvvk','kvkkvkv','kvkkvkk','vkkvkvv','vkkvkvk','vkkvkkv','vkkvvkv','vkkvvkk'];
 		switch (length){
 			case 2:
 				mode = mode2;
@@ -437,6 +438,9 @@
 				break;
 			case 6:
 				mode = mode6;
+				break;
+			case 7:
+				mode = mode7;
 				break;
 		}
 		pilihanStruktur = mode[Math.floor(Math.random()*mode.length)];
@@ -482,7 +486,7 @@
 					}
 					mapBaru.push(newMazeRow);
 			}
-			altarType = 1 + Math.ceil(Math.random()*4);
+			altarType = 1 + Math.ceil(Math.random()*6);
 			switch (altarType){
 				case 2:
 					mapBaru[2][2] = 'altarSacrifice'; mapBaru[4][4];
@@ -498,6 +502,9 @@
 					break;
 				case 6:
 					mapBaru[2][2] = 'altarSacrifice'; mapBaru[2][3] = 'altarSacrifice'; mapBaru[2][4] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][3] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
+					break;
+				case 7:
+					mapBaru[2][2] = 'altarSacrifice'; mapBaru[2][3] = 'altarSacrifice'; mapBaru[2][4] = 'altarSacrifice'; mapBaru[3][3] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][3] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
 					break;
 			}
 			
