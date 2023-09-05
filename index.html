@@ -56,6 +56,15 @@
             background: linear-gradient(to bottom, yellow 0%, black 100%);
         }
 		
+		.maze-wallWater {
+            background: url("wallWater.png");
+        }
+		
+		.maze-wallFire {
+            background: url("wallFire.png");
+			background-color: #FFFFFF;
+        }
+		
 		.maze-warp {
             background-color: blue;
         }
@@ -475,7 +484,7 @@
 	<script>
 	//Create Altar
 	
-	altarWords6 = ['VIDEOS'];
+	altarWords6 = ['VIDEOS','DEODAR'];
 	function createAltar(){
 		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
@@ -1150,10 +1159,12 @@
 	
 	<script>
 		function ride(transportation){
-			if (playerItem['T'] == undefined){playerItem['T'] = 1;} else {playerItem['T']++}
-			if (playerItem['E'] == undefined){playerItem['E'] = 2;} else {playerItem['E']+=2}
-			if (playerItem['L'] == undefined){playerItem['L'] = 1;} else {playerItem['L']++}
+			if (transportation == 'Rocket'){
+				if (playerItem['T'] == undefined){playerItem['T'] = 1;} else {playerItem['T']++}
+				if (playerItem['E'] == undefined){playerItem['E'] = 2;} else {playerItem['E']+=2}
+				if (playerItem['L'] == undefined){playerItem['L'] = 1;} else {playerItem['L']++}
 			teleport();
+			}
 		}
 	</script>
 	
@@ -1180,13 +1191,14 @@
 			"Taco": {sprite: "🌮", usable: true, action:"eat('Taco')", hungerValue: 100},
 			"Book of RATIOCINATORY": {sprite: "📕", usable: true, action:"read('RATIOCINATORY')", spawned: false},
 			"Buttonhook": {sprite: '<img src="buttonhook.png"/>'},
+			"Bucket": {sprite: '<img src="bucket.png"/>', spawned: false},
 		}
 		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco", "Book of RATIOCINATORY", 
-		"Buttonhook"];
+		"Buttonhook","Bucket"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1647,6 +1659,12 @@
 				if (mazeList[a2][b2] == undefined){
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 59){
 						if(!mazePosType.includes('conv')){mazePosType.push('conv');}
+					}
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 61){
+						if(!mazePosType.includes('wallWater')){mazePosType.push('wallWater');}
+					}
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 67){
+						if(!mazePosType.includes('wallFire')){mazePosType.push('wallFire');}
 					}
 				
 					if (mazeList[a2-1] == undefined){mazeList[a2-1] = {};}
