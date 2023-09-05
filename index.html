@@ -517,7 +517,7 @@
 			altarType = 1 + Math.ceil(Math.random()*6);
 			switch (altarType){
 				case 2:
-					mapBaru[2][2] = 'altarSacrifice'; mapBaru[4][4];
+					mapBaru[2][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
 					break;
 				case 3:
 					mapBaru[2][3] = 'altarSacrifice'; mapBaru[4][2] = 'altarSacrifice'; mapBaru[4][4] = 'altarSacrifice';
@@ -1191,7 +1191,7 @@
 			"Taco": {sprite: "🌮", usable: true, action:"eat('Taco')", hungerValue: 100},
 			"Book of RATIOCINATORY": {sprite: "📕", usable: true, action:"read('RATIOCINATORY')", spawned: false},
 			"Buttonhook": {sprite: '<img src="buttonhook.png"/>'},
-			"Bucket": {sprite: '<img src="bucket.png"/>', spawned: false},
+			"Bucket": {sprite: '<img src="bucket.png"/>', spawned: false, volume: 0},
 		}
 		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
@@ -1887,6 +1887,42 @@
 		</script>
 		
 		<script>
+		function extinguishFire(wallY,wallX){
+			if ((wallX -playerPosition.x)**2 + (wallY -playerPosition.y)**2 >= 4){
+				giveMessage('<br>You are too far.');
+				return
+			}
+			if (playerItem["Bucket"] == undefined){		
+				giveMessage('<br>You don\'t have bucket of water.');
+				return
+			}
+			if (daftarItemInfo["Bucket"].volume == 0){		
+				giveMessage('<br>Your bucket is empty.');
+				return
+			}
+			
+			daftarItemInfo["Bucket"].volume--;
+			mazeList[playerArea.x][playerArea.y]["map"][wallY][wallX] = 'road';
+			drawMaze();
+		}
+		</script>
+		
+		<script>
+		function fillWater(wallY,wallX){
+			if ((wallX -playerPosition.x)**2 + (wallY-playerPosition.y)**2 >= 4){
+				giveMessage('<br>You are too far.');
+				return
+			}
+			if (playerItem["Bucket"] == undefined){		
+				giveMessage('<br>You don\'t have bucket.');
+				return
+			}
+			giveMessage('<br>Bucket filled.');
+			daftarItemInfo["Bucket"].volume = 5;
+		}
+		</script>
+		
+		<script>
 		function kill(personY,personX){
 			namaPerson = mazeList[playerArea.x][playerArea.y]["person"][personY][personX];
 			if ((personX + 1 -playerPosition.x)**2 + (personY + 1-playerPosition.y)**2 >= 4){
@@ -1956,6 +1992,16 @@
 					if ((maze[row][col]).substring(0,4) == 'wall' && maze[row][col].length == 5){
 						cell.innerHTML = '<div style="color: white">' + (maze[row][col]).substring(4,5) + '</div>';
 						if (playerItem[(maze[row][col]).substring(4,5)]!=undefined){if (playerItem[(maze[row][col]).substring(4,5)] > 0){cell.innerHTML = '<div class="glow">' + (maze[row][col]).substring(4,5) + '</div>';}}
+					}
+					
+					if (maze[row][col] == 'wallWater'){
+						cell.classList.add("tooltip");
+						cell.innerHTML = '<div class="tooltiptext">Water<br><button onclick="fillWater();">Fill Water</button></div>'
+					}
+					
+					if (maze[row][col] == 'wallFire'){
+						cell.classList.add("tooltip");
+						cell.innerHTML = '<div class="tooltiptext">Fire<br><button onclick="extinguishFire('+row+','+col+');">Extinguish</button></div>'
 					}
 					
 					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
