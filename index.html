@@ -75,6 +75,22 @@
 		.maze-altarSacrifice {
             background-color: #D4AF37;
         }
+		
+		.maze-convL {
+            background: url("floorLeft.png");
+        }
+		
+		.maze-convR {
+            background: url("floorRight.png");
+        }
+		
+		.maze-convU {
+            background: url("floorUp.png");
+        }
+		
+		.maze-convD {
+            background: url("floorDown.png");
+        }
 
 		
 		.tab {
@@ -383,6 +399,7 @@
 	<script>
 	    mazeList = {}
 		mazePosType = ['wall','road','spike']
+		dirList = ['D','U','L','R']
 	</script>
 	
 	<script>
@@ -457,6 +474,8 @@
 	
 	<script>
 	//Create Altar
+	
+	altarWords6 = ['VIDEOS'];
 	function createAltar(){
 		pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
@@ -564,7 +583,7 @@
 			}
 		}
 		
-		giveMessage('Boom!!!');
+		giveMessage('<br>Boom!!!');
 		playerItem['B']-=2;playerItem['O']--;playerItem['M']--
 
 		document.getElementById('buttonBomb').hidden = true;
@@ -1162,11 +1181,12 @@
 			"Book of RATIOCINATORY": {sprite: "📕", usable: true, action:"read('RATIOCINATORY')", spawned: false},
 			"Buttonhook": {sprite: '<img src="buttonhook.png"/>'},
 		}
-		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco", "Book of RATIOCINATORY", "Buttonhook"];
+		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
-		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco"];
+		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco", "Book of RATIOCINATORY", 
+		"Buttonhook"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1215,6 +1235,7 @@
 					newMazeRow = [];
 					for(let j = 0; j < mazeSize[1]; j++){
 						pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
+						if (pilihanTipe == 'conv'){pilihanTipe += dirList[Math.floor(dirList.length*Math.random())]}
 						if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 						if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 						if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
@@ -1498,7 +1519,7 @@
 					spawnItem('Broccoli');
 					break;
 				case 'spawnPerson':
-					daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car']
+					daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car','wingull']
 					spawnPerson(daftarPerson[Math.floor(Math.random()*daftarPerson.length)]);
 					break;
 				case 'personMove':
@@ -1518,6 +1539,13 @@
 	<script>
 		function mapRefine(mapBaru, posX, posY){
 			maksDist = Math.max(Math.abs(posX), Math.abs(posY));
+			for (let i = 1; i < mazeSize[0] - 1 ; i++){
+				for (let j = 1; j < mazeSize[1] - 1; j++){
+					if (mapBaru[i][j] == 'spike' && Math.random() < 1/maksDist){
+						mapBaru[i][j] = 'road';
+					}
+				}
+			}
 			if (maksDist == 2){
 				dirCollection = [];
 				if (posX == 2){dirCollection.push('R');}
@@ -1617,6 +1645,9 @@
 				if (mazeList[a2] == undefined){mazeList[a2] = {};}
 				b2 = b + daftarTetangga[i][1];
 				if (mazeList[a2][b2] == undefined){
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 59){
+						if(!mazePosType.includes('conv')){mazePosType.push('conv');}
+					}
 				
 					if (mazeList[a2-1] == undefined){mazeList[a2-1] = {};}
 					if (mazeList[a2+1] == undefined){mazeList[a2+1] = {};}
@@ -1632,6 +1663,7 @@
 						newMazeRow = [];
 						for(let j = 0; j < mazeSize[1]; j++){
 								pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
+								if (pilihanTipe == 'conv'){pilihanTipe += dirList[Math.floor(dirList.length*Math.random())]}
 								if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 								if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 								if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
@@ -1658,7 +1690,7 @@
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 19){
 						mazeList[a2][b2]["item"] = genItem(mapBaru,['E','X','I','T']);
 					}
-					if (Math.max(Math.abs(a2), Math.abs(b2)) == 23){
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 23 || Math.max(Math.abs(a2), Math.abs(b2)) == 53){
 						var colorHexLight = '89ABCDEF';
 						var color = [0,0,0,0,0,0]
 						var colorHex = '0123456789ABCDEF'
@@ -1699,6 +1731,7 @@
 			newMazeRow = [];
 			for(let j = 0; j < mazeSize[1]; j++){
 				pilihanTipe = mazePosType[Math.floor(Math.random()*mazePosType.length)]
+				if (pilihanTipe == 'conv'){pilihanTipe += dirList[Math.floor(dirList.length*Math.random())]}
 				if (pilihanTipe == 'wall' && Math.random() < 1/2){pilihanTipe += daftarHuruf[Math.floor(Math.random()*daftarHuruf.length)]}
 				if (((i==0)||(i==mazeSize[0]-1))||((j==0)||(j==mazeSize[1]-1))){pilihanTipe = 'wall';}
 				if (( ((i==warps[0])&&(j==0))||((i==warps[1])&&(j==mazeSize[1]-1)) )||( ((i==0)&&(j==warps[2]))||((i==mazeSize[0]-1)&&(j==warps[3])) )){pilihanTipe = 'warp';}
@@ -1887,6 +1920,7 @@
 			'Moon': {name: 'Ace', nameKnown: false, sprite: '<span style="font-size: 30px;">🌛</span>', action: ['talk'], type: 'person', spawned: false},
 			'Trader': {name: 'William A. Schroeder', nameKnown: false, sprite: '<img src ="trader.png" />', action: ['talk'], type: 'person', spawned: false},
 			'car': {sprite: '<span style="font-size: 30px;">🚗</span>', action: ['drive'], type: 'transportation', moving: false, spawned: false},
+			'wingull': {sprite: '<img src="wingull.png"/>', action: ['kill']},
 		}
 		
         function drawMaze() {
@@ -2011,9 +2045,21 @@
 				giveMessage('<br>Ouch!!');
 				healthDrop(1);
 			}
+			if (tipeLantai == 'convL'){
+				additionMove = 'left';
+			}
+			if (tipeLantai == 'convR'){
+				additionMove = 'right';
+			}
+			if (tipeLantai == 'convU'){
+				additionMove = 'up';
+			}
+			if (tipeLantai == 'convD'){
+				additionMove = 'down';
+			}
 		}
 		
-        function move(direction) {
+        function move(direction,countMove = 0) {
 			if (movable == false){return}
 			if (life == false){giveMessage('<br>You can\'t move anymore.');return}
 			if (firstStep == false && direction != 'neutral'){firstStep = true; giveMessage('<br>Now, you are taking your first step.');}
@@ -2034,6 +2080,7 @@
 			
             let newX = playerPosition.x;
             let newY = playerPosition.y;
+			additionMove = ''
 
             if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) !== 'wall') {
                 newY -= 1; checkDown(maze[newY][newX]);
@@ -2227,10 +2274,28 @@
 			
 			if (mazeList[playerArea.x][playerArea.y]["person"] != undefined){personMove();}
             drawMaze();
+			
+			if (countMove > 25){
+				movable = false; life = false;
+				giveMessage('<br>You are dead by infinity loop of conveyor belt');
+			}
+			else{
+			if (additionMove != ''){hitungan = countMove; pushkeyAble = false; setTimeout(gerakLagi, 100)}}
+			
         }
 		
+		function gerakLagi(){
+			move(additionMove,hitungan + 1);
+			pushkeyAble = true;
+		}
+		
+	
+		
 		// Tambahkan event listener untuk mendeteksi input tombol arah pada keyboard
+		pushkeyAble = true;
+		
         document.addEventListener('keydown', function (event) {
+			if (pushkeyAble == true){
             if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') {
                 move('up');
             } else if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
@@ -2240,6 +2305,7 @@
             } else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
                 move('right');
             }
+			}
         });
 		
 
