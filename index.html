@@ -65,13 +65,31 @@
 			background-color: #FFFFFF;
         }
 		
+		.maze-wallBush {
+            background: url("wallBush.png");
+			background-color: #FFFFFF;
+        }
+		
 		.maze-warp {
             background-color: blue;
         }
 		
 		.maze-letterGenerator {
-            background-color: #FFFF00;
-        }
+            background: linear-gradient(
+			90deg,
+			rgba(255, 0, 0, 1) 0%,
+			rgba(255, 154, 0, 1) 10%,
+			rgba(208, 222, 33, 1) 20%,
+			rgba(79, 220, 74, 1) 30%,
+			rgba(63, 218, 216, 1) 40%,
+			rgba(47, 201, 226, 1) 50%,
+			rgba(28, 127, 238, 1) 60%,
+			rgba(95, 21, 242, 1) 70%,
+			rgba(186, 12, 248, 1) 80%,
+			rgba(251, 7, 217, 1) 90%,
+			rgba(255, 0, 0, 1) 100%
+			);
+		}
 		
 		.maze-home {
             background-color: #FF00FF;
@@ -301,6 +319,7 @@
 
 
     </style>
+	
 </head>
 
 <body>
@@ -375,6 +394,7 @@
 		<div id="buttonZooiengHowl" hidden ><button class = "buttonSkill" onclick="zooiengHowl();">Zooieng Howl</button></div>
 		<div id="buttonMakeWine" hidden ><button class = "buttonSkill" onclick="makeWine();">Make Wine</button></div>
 		<div id="buttonSleep"><button class ="buttonSkill" onclick="sleep();">😴 Sleep</button></div>
+		<div id="buttonSwitcheroo" hidden><button class ="buttonSkill" onclick="switchero();">Switcheroo</button></div>
 	</div>
 	
 	<div id="Item" class="tabcontent">
@@ -719,6 +739,23 @@
 		move('neutral');
 	}
 	</script>	
+	
+	<script>
+	function switchero(){
+		for (let i = 1; i < mazeSize[0] - 1; i++){
+			for (let j = 1; j < mazeSize[1] - 1; j++){
+				if (mazeList[playerArea.x][playerArea.y]["map"][i][j].substring(0,4) == 'conv'){mazeList[playerArea.x][playerArea.y]["map"][i][j] = 'conv' + dirList[Math.floor(dirList.length*Math.random())];}
+			}
+		}
+		
+		playerItem['S']--;
+		giveMessage('<br>Switcheroo!!');
+
+		document.getElementById('buttonSwitcheroo').hidden = true;
+		if (playerItem['S'] > 0){document.getElementById('buttonSwitcheroo').hidden = false;}
+		move('neutral');
+	}
+	</script>
 	
 	<script>
 	function keyMaking(){
@@ -1192,16 +1229,21 @@
 			"Book of RATIOCINATORY": {sprite: "📕", usable: true, action:"read('RATIOCINATORY')", spawned: false},
 			"Buttonhook": {sprite: '<img src="buttonhook.png"/>'},
 			"Bucket": {sprite: '<img src="bucket.png"/>', spawned: false, volume: 0},
+			"Flint": {sprite: '<img src="flint.png"/>', spawned: false},
+			"Steel": {sprite: '<img src="steel.png"/>', spawned: false},
+			"Hibiscus": {sprite: "🌺"},
 		}
 		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco", "Book of RATIOCINATORY", 
-		"Buttonhook","Bucket"];
+		"Buttonhook","Bucket","Flint","Steel","Hibiscus"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
+		daftarHuruf = daftarHuruf.split('');
+		
 		function spawnItem(pilihanItem = ''){
 			if (pilihanItem == ''){pilihanItem = daftarItem[Math.floor(Math.random()*daftarItem.length)];}
 			if (daftarItemInfo[pilihanItem] != undefined){
@@ -1531,7 +1573,7 @@
 					spawnItem('Broccoli');
 					break;
 				case 'spawnPerson':
-					daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car','wingull']
+					daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car','wingull','swan']
 					spawnPerson(daftarPerson[Math.floor(Math.random()*daftarPerson.length)]);
 					break;
 				case 'personMove':
@@ -1646,6 +1688,7 @@
 	</script>
 	
 	<script>
+		switcheroo = false;
 		function createNeighbor(a,b){
 			if (mazeList[a] == undefined){}
 			else if (mazeList[a][b] == undefined){}
@@ -1658,13 +1701,16 @@
 				b2 = b + daftarTetangga[i][1];
 				if (mazeList[a2][b2] == undefined){
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 59){
-						if(!mazePosType.includes('conv')){mazePosType.push('conv');}
+						if(!mazePosType.includes('conv')){mazePosType.push('conv'); switcheroo = true;}
 					}
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 61){
-						if(!mazePosType.includes('wallWater')){mazePosType.push('wallWater');}
+						if(!daftarHuruf.includes('Water')){daftarHuruf.push('Water');}
 					}
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 67){
-						if(!mazePosType.includes('wallFire')){mazePosType.push('wallFire');}
+						if(!daftarHuruf.includes('Fire')){daftarHuruf.push('Fire');}
+					}
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 71){
+						if(!daftarHuruf.includes('Bush')){daftarHuruf.push('Bush');}
 					}
 				
 					if (mazeList[a2-1] == undefined){mazeList[a2-1] = {};}
@@ -1975,6 +2021,7 @@
 			'Trader': {name: 'William A. Schroeder', nameKnown: false, sprite: '<img src ="trader.png" />', action: ['talk'], type: 'person', spawned: false},
 			'car': {sprite: '<span style="font-size: 30px;">🚗</span>', action: ['drive'], type: 'transportation', moving: false, spawned: false},
 			'wingull': {sprite: '<img src="wingull.png"/>', action: ['kill']},
+			'swan': {sprite: '🦢', action: ['kill']},
 		}
 		
         function drawMaze() {
@@ -1996,7 +2043,7 @@
 					
 					if (maze[row][col] == 'wallWater'){
 						cell.classList.add("tooltip");
-						cell.innerHTML = '<div class="tooltiptext">Water<br><button onclick="fillWater();">Fill Water</button></div>'
+						cell.innerHTML = '<div class="tooltiptext">Water<br><button onclick="fillWater('+row+','+col+');">Fill Water</button></div>'
 					}
 					
 					if (maze[row][col] == 'wallFire'){
@@ -2237,6 +2284,10 @@
 			if (playerItem['J']!=undefined){
 				document.getElementById('buttonJack').hidden = true;
 				if (playerItem['J'] > 0){document.getElementById('buttonJack').hidden = false;}
+			}
+			if (playerItem['S']!=undefined){
+				document.getElementById('buttonSwitcheroo').hidden = true;
+				if (playerItem['S'] > 0 && switcheroo == true){document.getElementById('buttonSwitcheroo').hidden = false;}
 			}
 			if (playerItem['K']!=undefined && playerItem['E']!=undefined && playerItem['Y']!=undefined){
 				document.getElementById('buttonKeyMaking').hidden = true;
