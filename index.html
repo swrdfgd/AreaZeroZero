@@ -118,6 +118,10 @@
 		.maze-convD {
             background: url("floorDown.png");
         }
+		
+		.maze-goo {
+            background: url("goo.png");
+        }
 
 		
 		.tab {
@@ -830,9 +834,11 @@
 		}
 		
 		playerItem['O']--;playerItem['U']--;playerItem['T']--;
-
+		giveMessage('Clearing...');
+		
 		document.getElementById('buttonOuterClear').hidden = true;
 		if (playerItem['O']*playerItem['U']*playerItem['T'] > 0){document.getElementById('buttonOuterClear').hidden = false;}
+		
 		
 		move('neutral');
 	}
@@ -1172,6 +1178,8 @@
 					break;
 				case 'RATIOCINATORY':
 					break;	
+				case 'UNSCRAMBLE':
+					break;	
 			}
 		}
 	</script>
@@ -1232,13 +1240,18 @@
 			"Flint": {sprite: '<img src="flint.png"/>', spawned: false},
 			"Steel": {sprite: '<img src="steel.png"/>', spawned: false},
 			"Hibiscus": {sprite: "🌺"},
+			"Wilted Flower": {sprite: "🥀"},
+			"Sponge": {sprite: "🧽"},
+			"Book of UNSCRAMBLE": {sprite: "📕", usable: true, action:"read('UNSCRAMBLE')", spawned: false},
+			"Skull and Crossbones": {sprite: "☠️"},
+			"Wet Sponge": {sprite: '<span style="text-shadow: -1px -1px 0 #00f, 1px -1px 0 #00f, -1px 1px 0 #00f, 1px 1px 0 #00f;">🧽</span>'},
 		}
 		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco", "Book of RATIOCINATORY", 
-		"Buttonhook","Bucket","Flint","Steel","Hibiscus"];
+		"Buttonhook","Bucket","Flint","Steel","Hibiscus","Wilted Flower","Sponge","Book of UNSCRAMBLE","Skull and Crossbones"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -1389,14 +1402,18 @@
 	</script>
 	
 	<script>
-		function spawnPerson(person){
+		function spawnPerson(person, pilihanAreaX = 'null', pilihanAreaY = 'null'){
 			if (personInfo[person].spawned != undefined){
 				if (personInfo[person].spawned == true){return}
 			}
+			if (pilihanAreaX == 'null'){
 			pilihanAreaX = Object.keys(mazeList)[Math.floor(Math.random()*Object.keys(mazeList).length)];
+			}
 			pilihanAreaXObjek = mazeList[pilihanAreaX];
 			if (Object.keys(pilihanAreaXObjek).length == 0){return}
+			if (pilihanAreaY == 'null'){
 			pilihanAreaY = Object.keys(pilihanAreaXObjek)[Math.floor(Math.random()*Object.keys(pilihanAreaXObjek).length)];
+			}
 			pilihanAreaX = parseInt(pilihanAreaX);
 			pilihanAreaY = parseInt(pilihanAreaY);
 			
@@ -1499,7 +1516,8 @@
 	<script>
 		function healthDrop(damage){
 			health -= damage;
-			if (health == 0){
+			if (health < 0){
+				health = 0
 				playerPosition.x = -2; playerPosition.y = -2;
 				movable = false;
 				
@@ -1544,6 +1562,7 @@
 	<script>
 		eventList = ['mazeReconstruct','spawnItem','hungerDrop','spawnRabbit','spawnBroccoli','spawnPerson','personMove','sleepCharged']
 		eventSpeed = 1;
+		daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car','wingull','swan','Cook','badger']
 		function eventStart(){
 			for (let i = 0; i < eventSpeed; i++){
 			pilihanEvent = eventList[Math.floor(Math.random()*eventList.length)];
@@ -1573,7 +1592,6 @@
 					spawnItem('Broccoli');
 					break;
 				case 'spawnPerson':
-					daftarPerson = ['Moon','turkey','Trader','hippopotamus','cow','car','wingull','swan']
 					spawnPerson(daftarPerson[Math.floor(Math.random()*daftarPerson.length)]);
 					break;
 				case 'personMove':
@@ -1689,6 +1707,7 @@
 	
 	<script>
 		switcheroo = false;
+		mazeThemes = ['normal'];
 		function createNeighbor(a,b){
 			if (mazeList[a] == undefined){}
 			else if (mazeList[a][b] == undefined){}
@@ -1711,6 +1730,9 @@
 					}
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 71){
 						if(!daftarHuruf.includes('Bush')){daftarHuruf.push('Bush');}
+					}
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 79){
+						if(!mazePosType.includes('goo')){mazePosType.push('goo'); switcheroo = true;}
 					}
 				
 					if (mazeList[a2-1] == undefined){mazeList[a2-1] = {};}
@@ -1738,7 +1760,12 @@
 					}
 					mapBaru = mapRefine(mapBaru, a2, b2);
 					
-					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps, "explored": false}
+					pilihanTema = mazeList[a][b]["theme"];
+					if (Math.random() < 1/2){
+						pilihanTema = mazeThemes[Math.floor(Math.random()*mazeThemes.length)];
+					}
+					
+					mazeList[a2][b2] = {"map": mapBaru, "neighbor": 0, "warps": warps, "explored": false, "theme": pilihanTema}
 					if (Math.max(Math.abs(a2), Math.abs(b2))%3 == 0){
 						mazeList[a2][b2]["item"] = genItem(mapBaru);
 					}
@@ -1779,6 +1806,10 @@
 					if (Math.max(Math.abs(a2), Math.abs(b2)) == 43){
 						mazeList[a2][b2]["item"] = genItem(mapBaru,['W','H','I','S','P','E','R']);
 					}
+					if (Math.max(Math.abs(a2), Math.abs(b2)) == 73){
+						spawnPerson(daftarPerson[Math.floor(Math.random()*daftarPerson.length)],a2,b2);
+					}
+					
 				}
 			}
 			if (mazeList[a] == undefined){return}
@@ -1806,7 +1837,7 @@
 			areaZeroZero.push(newMazeRow);
 		}
 		mazeList[0] = {};
-		mazeList[0][0] = {"map": areaZeroZero, "neighbor": 0, "warps": warps, "explored": true}
+		mazeList[0][0] = {"map": areaZeroZero, "neighbor": 0, "warps": warps, "explored": true, "theme": 'normal',}
         createNeighbor(0,0)
 	</script>
 	
@@ -1926,8 +1957,27 @@
 				case 'Trader':
 					giveMessage('<br>' + personInfo[namaPerson].sprite + namaPersonCap + ': ....');
 					break;
+				case 'Cook':
+					giveMessage('<br>' + personInfo[namaPerson].sprite + namaPersonCap + ': I\'m looking for rare and delicious ingredients');
+					break;
 			}
 			
+			drawMaze();
+		}
+		</script>
+		
+		<script>
+		function burnBush(wallY,wallX){
+			if ((wallX -playerPosition.x)**2 + (wallY -playerPosition.y)**2 >= 4){
+				giveMessage('<br>You are too far.');
+				return
+			}
+			if (playerItem["Flint"] == undefined || playerItem["Steel"] == undefined){		
+				giveMessage('<br>You need flint and steel.');
+				return
+			}
+			
+			mazeList[playerArea.x][playerArea.y]["map"][wallY][wallX] = 'wallFire';
 			drawMaze();
 		}
 		</script>
@@ -1965,6 +2015,51 @@
 			}
 			giveMessage('<br>Bucket filled.');
 			daftarItemInfo["Bucket"].volume = 5;
+		}
+		</script>
+		
+		<script>
+		function spongeAbsorb(wallY,wallX){
+			if ((wallX -playerPosition.x)**2 + (wallY-playerPosition.y)**2 >= 4){
+				giveMessage('<br>You are too far.');
+				return
+			}
+			if (playerItem["Sponge"] == undefined){		
+				giveMessage('<br>You don\'t have any sponge.');
+				return
+			}
+			if (playerItem["Sponge"] < 1){		
+				giveMessage('<br>You don\'t have any sponge.');
+				return
+			}
+			playerItem["Sponge"]--
+			if (playerItem["Wet Sponge"] == undefined){playerItem["Wet Sponge"] = 1;}
+			else{playerItem["Wet Sponge"]++}
+			mazeList[playerArea.x][playerArea.y]["map"][wallY][wallX] = 'road';
+			drawMaze()
+			
+		}
+		</script>
+		
+		<script>
+		function spongeDry(wallY,wallX){
+			if ((wallX -playerPosition.x)**2 + (wallY-playerPosition.y)**2 >= 4){
+				giveMessage('<br>You are too far.');
+				return
+			}
+			if (playerItem["Wet Sponge"] == undefined){		
+				giveMessage('<br>You don\'t have any wet sponge.');
+				return
+			}
+			if (playerItem["Wet Sponge"] < 1){		
+				giveMessage('<br>You don\'t have any wet sponge.');
+				return
+			}
+			playerItem["Wet Sponge"]--
+			if (playerItem["Sponge"] == undefined){playerItem["Wet Sponge"] = 1;}
+			else{playerItem["Sponge"]++}
+			
+			
 		}
 		</script>
 		
@@ -2022,6 +2117,8 @@
 			'car': {sprite: '<span style="font-size: 30px;">🚗</span>', action: ['drive'], type: 'transportation', moving: false, spawned: false},
 			'wingull': {sprite: '<img src="wingull.png"/>', action: ['kill']},
 			'swan': {sprite: '🦢', action: ['kill']},
+			'Cook': {nameKnown: false, sprite: '<img src ="cook.png" />', action: ['talk'], type: 'person', spawned: false},
+			'badger': {sprite: '🦡', action: ['kill']},
 		}
 		
         function drawMaze() {
@@ -2043,12 +2140,17 @@
 					
 					if (maze[row][col] == 'wallWater'){
 						cell.classList.add("tooltip");
-						cell.innerHTML = '<div class="tooltiptext">Water<br><button onclick="fillWater('+row+','+col+');">Fill Water</button></div>'
+						cell.innerHTML = '<div class="tooltiptext">Water<br><button onclick="fillWater('+row+','+col+');">Fill Water</button><br><button onclick="spongeAbsorb('+row+','+col+');">Absorb</button></div>'
 					}
 					
 					if (maze[row][col] == 'wallFire'){
 						cell.classList.add("tooltip");
-						cell.innerHTML = '<div class="tooltiptext">Fire<br><button onclick="extinguishFire('+row+','+col+');">Extinguish</button></div>'
+						cell.innerHTML = '<div class="tooltiptext">Fire<br><button onclick="extinguishFire('+row+','+col+');">Extinguish</button><br><button onclick="spongeDry('+row+','+col+');">Dry Sponge</button></div>'
+					}
+					
+					if (maze[row][col] == 'wallBush'){
+						cell.classList.add("tooltip");
+						cell.innerHTML = '<div class="tooltiptext">Bush<br><button onclick="burnBush('+row+','+col+');">Burn</button></div>'
 					}
 					
 					if ((col > 0)&&(col < maze[row].length - 1)){ if ((row > 0)&&(row < maze.length - 1)){
@@ -2156,6 +2258,14 @@
 				giveMessage('<br>Ouch!!');
 				healthDrop(1);
 			}
+			if (tipeLantai == 'wallFire'){
+				giveMessage('<br>Ouch!! ouch!!');
+				healthDrop(10);
+			}
+			if (tipeLantai == 'goo'){
+				giveMessage('<br>Ouch!! ouch!!');
+				healthDrop(5);
+			}
 			if (tipeLantai == 'convL'){
 				additionMove = 'left';
 			}
@@ -2193,13 +2303,13 @@
             let newY = playerPosition.y;
 			additionMove = ''
 
-            if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]).substring(0,4) !== 'wall') {
+            if (direction === 'up' && newY > 0 && ( (maze[newY - 1][newX]).substring(0,4) !== 'wall' || (maze[newY - 1][newX]) == 'wallFire') ) {
                 newY -= 1; checkDown(maze[newY][newX]);
-            } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]).substring(0,4) !== 'wall') {
+            } else if (direction === 'down' && newY < maze.length - 1 && ( (maze[newY + 1][newX]).substring(0,4) !== 'wall' || (maze[newY + 1][newX]) == 'wallFire') ) {
                 newY += 1; checkDown(maze[newY][newX]);
-            } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]).substring(0,4) !== 'wall') {
+            } else if (direction === 'left' && newX > 0 && ( (maze[newY][newX - 1]).substring(0,4) !== 'wall' || (maze[newY][newX - 1]) == 'wallFire') ) {
                 newX -= 1; checkDown(maze[newY][newX]);
-            } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) !== 'wall') {
+            } else if (direction === 'right' && newX < maze[0].length - 1 && ( (maze[newY][newX + 1]).substring(0,4) !== 'wall' || (maze[newY][newX + 1]) == 'wallFire') ) {
                 newX += 1; checkDown(maze[newY][newX]);
             }
 			
@@ -2400,8 +2510,8 @@
         }
 		
 		function gerakLagi(){
-			move(additionMove,hitungan + 1);
 			pushkeyAble = true;
+			move(additionMove,hitungan + 1);
 		}
 		
 	
