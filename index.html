@@ -125,7 +125,7 @@
 
 		
 		.tab {
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         button {
@@ -1169,7 +1169,7 @@
 		function read(book){
 			switch (book){
 				case 'ZOOIER':
-					playerSprite = 'playerZooier.png';
+					playerSprite = '<img src="playerZooier.png"/>';
 					playerMutant = 'Zooier';
 					eventList.push('ZooiengHowlCharge');
 					break;
@@ -2105,7 +2105,7 @@
         playerArea = { x: 0, y: 0};
 		playerItem = {B: 4, O: 4, M: 2, C:5};
 		playerInfo = {happiness: 0}
-		playerSprite = "player.png"
+		playerSprite = '<img src="player.png"/>';
 		personInfo = {
 			'rabbit': {sprite: '🐰', action: ['kill']},
 			'turkey': {sprite: '🦃', action: ['kill']},
@@ -2117,7 +2117,7 @@
 			'car': {sprite: '<span style="font-size: 30px;">🚗</span>', action: ['drive'], type: 'transportation', moving: false, spawned: false},
 			'wingull': {sprite: '<img src="wingull.png"/>', action: ['kill']},
 			'swan': {sprite: '🦢', action: ['kill']},
-			'Cook': {nameKnown: false, sprite: '<img src ="cook.png" />', action: ['talk'], type: 'person', spawned: false},
+			'Cook': {name: 'Kada', nameKnown: false, sprite: '<img src ="cook.png" />', action: ['talk'], type: 'person', spawned: false},
 			'badger': {sprite: '🦡', action: ['kill']},
 		}
 		
@@ -2208,7 +2208,7 @@
 					}
 					if (playerPosition.x === col && playerPosition.y === row) {
 						if (playerSprite != '(0,0)'){
-                        cell.innerHTML = '<img src="'+playerSprite+'"/>'; // Representasi pemain
+                        cell.innerHTML = playerSprite; // Representasi pemain
 						}
 						else {cell.innerHTML = '(0,0)';}
                     }
