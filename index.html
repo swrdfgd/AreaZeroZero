@@ -1180,6 +1180,8 @@
 					break;	
 				case 'UNSCRAMBLE':
 					break;	
+				case 'VARITYPISTS':
+					break;	
 			}
 		}
 	</script>
@@ -1245,13 +1247,14 @@
 			"Book of UNSCRAMBLE": {sprite: "📕", usable: true, action:"read('UNSCRAMBLE')", spawned: false},
 			"Skull and Crossbones": {sprite: "☠️"},
 			"Wet Sponge": {sprite: '<span style="text-shadow: -1px -1px 0 #00f, 1px -1px 0 #00f, -1px 1px 0 #00f, 1px 1px 0 #00f;">🧽</span>'},
+			"Book of VARITYPISTS": {sprite: "📕", usable: true, action:"read('VARITYPISTS')", spawned: false},
 		}
 		foodList = ["Cupcake", "Broccoli", "Wine", "Candy", "Taco"];
 		
 	
 		daftarHuruf = "QWERTYUIOPASDFGHJKLZXCVBNM";
 		daftarItem = ["Cupcake","Book of ZOOIER","Broccoli","Rocket","Book of VINOLOGIST","Candy","Maple Leaf","Pistol","Taco", "Book of RATIOCINATORY", 
-		"Buttonhook","Bucket","Flint","Steel","Hibiscus","Wilted Flower","Sponge","Book of UNSCRAMBLE","Skull and Crossbones"];
+		"Buttonhook","Bucket","Flint","Steel","Hibiscus","Wilted Flower","Sponge","Book of UNSCRAMBLE","Skull and Crossbones","Book of VARITYPISTS"];
 		for (i = 0; i < daftarHuruf.length; i++){
 			daftarItem.push(daftarHuruf[i])
 		}
@@ -2325,6 +2328,16 @@
             } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]).substring(0,4) == 'wall' && maze[newY][newX + 1].length == 5) {
                 if ((maze[newY][newX + 1]).substring(4,5) == 'R'){if (playerItem['R'] != undefined){playerItem['R']++} else {playerItem['R'] = 2;}}
 				if (playerItem[(maze[newY][newX + 1]).substring(4,5)] != undefined){if (playerItem[(maze[newY][newX + 1]).substring(4,5)] > 0) {if ((maze[newY][newX + 1]).substring(4,5) == 'I'){itemReceive();} if ((maze[newY][newX + 1]).substring(4,5) == 'Q'){answerQuestion();} newX += 1; playerItem[(maze[newY][newX]).substring(4,5)]--; mazeList[playerArea.x][playerArea.y]["map"][newY][newX] = 'road'}};
+            }
+			
+			else if (direction === 'up' && newY > 0 && (maze[newY - 1][newX]) == 'wallWater') {
+				giveMessage('<br>You can\'t swim.');
+            } else if (direction === 'down' && newY < maze.length - 1 && (maze[newY + 1][newX]) == 'wallWater') {
+				giveMessage('<br>You can\'t swim.');
+            } else if (direction === 'left' && newX > 0 && (maze[newY][newX - 1]) == 'wallWater') {
+				giveMessage('<br>You can\'t swim.');
+            } else if (direction === 'right' && newX < maze[0].length - 1 && (maze[newY][newX + 1]) == 'wallWater') {
+				giveMessage('<br>You can\'t swim.');
             }
 			
 
